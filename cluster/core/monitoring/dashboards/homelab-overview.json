@@ -1,0 +1,128 @@
+{
+  "dashboard": {
+    "title": "🏠 Homelab Cluster Overview",
+    "tags": ["homelab", "overview"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "title": "Cluster Status",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "targets": [{
+          "expr": "count(kube_node_info)",
+          "legendFormat": "Total Nodes"
+        }],
+        "options": {
+          "textMode": "value_and_name",
+          "colorMode": "background",
+          "graphMode": "none"
+        }
+      },
+      {
+        "title": "Pods Running",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+        "targets": [{
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\"})",
+          "legendFormat": "Running Pods"
+        }]
+      },
+      {
+        "title": "Total CPU Cores",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+        "targets": [{
+          "expr": "sum(kube_node_status_capacity{resource=\"cpu\"})",
+          "legendFormat": "CPU Cores"
+        }]
+      },
+      {
+        "title": "Total Memory",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+        "targets": [{
+          "expr": "sum(kube_node_status_capacity{resource=\"memory\"}) / 1024 / 1024 / 1024",
+          "legendFormat": "Total GB"
+        }],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "decgbytes"
+          }
+        }
+      },
+      {
+        "title": "CPU Usage by Node",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+        "targets": [{
+          "expr": "(1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance)) * 100",
+          "legendFormat": "{{instance}}"
+        }],
+        "yaxes": [{
+          "format": "percent",
+          "max": 100,
+          "min": 0
+        }]
+      },
+      {
+        "title": "Memory Usage by Node",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+        "targets": [{
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "{{instance}}"
+        }],
+        "yaxes": [{
+          "format": "percent",
+          "max": 100,
+          "min": 0
+        }]
+      },
+      {
+        "title": "🌡️ Raspberry Pi Temperatures",
+        "type": "graph",
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 12},
+        "targets": [{
+          "expr": "node_hwmon_temp_celsius{chip=\"cpu_thermal\"}",
+          "legendFormat": "{{instance}}"
+        }],
+        "yaxes": [{
+          "format": "celsius",
+          "label": "Temperature"
+        }],
+        "alert": {
+          "conditions": [{
+            "evaluator": {
+              "params": [80],
+              "type": "gt"
+            },
+            "query": {
+              "params": ["A", "5m", "now"]
+            },
+            "type": "query"
+          }],
+          "name": "High Raspberry Pi Temperature"
+        }
+      },
+      {
+        "title": "🎮 GPU Utilization",
+        "type": "graph",
+        "gridPos": {"h": 6, "w": 12, "x": 12, "y": 12},
+        "targets": [{
+          "expr": "DCGM_FI_DEV_GPU_UTIL",
+          "legendFormat": "{{gpu}} - {{Hostname}}"
+        }],
+        "yaxes": [{
+          "format": "percent",
+          "max": 100,
+          "min": 0
+        }]
+      }
+    ]
+  }
+}

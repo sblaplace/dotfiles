@@ -1,0 +1,186 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: prometheus-community
+  namespace: monitoring
+spec:
+  interval: 24h
+  url: https://prometheus-community.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "55.x.x"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: monitoring
+  
+  values:
+    # Grafana configuration
+    grafana:
+      enabled: true
+      adminPassword: "admin"  # Change this or use secrets!
+      
+      # Enable anonymous viewing for kiosk
+      grafana.ini:
+        auth.anonymous:
+          enabled: true
+          org_name: Main Org.
+          org_role: Viewer
+        
+        server:
+          root_url: "http://neovenezia.local:3000"
+        
+        users:
+          default_theme: dark
+      
+      # Persistence
+      persistence:
+        enabled: true
+        size: 10Gi
+      
+      # Dashboards to install
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+      
+      # Load community dashboards
+      dashboards:
+        default:
+          node-exporter:
+            gnetId: 1860  # Node Exporter Full
+            revision: 31
+            datasource: Prometheus
+          
+          kubernetes-cluster:
+            gnetId: 7249  # Kubernetes Cluster
+            revision: 1
+            datasource: Prometheus
+          
+          kubernetes-pods:
+            gnetId: 6417  # Kubernetes Pods
+            revision: 1
+            datasource: Prometheus
+          
+          longhorn:
+            gnetId: 13032  # Longhorn
+            revision: 6
+            datasource: Prometheus
+          
+          cilium-metrics:
+            gnetId: 16611  # Cilium Metrics
+            revision: 1
+            datasource: Prometheus
+          
+          nvidia-gpu:
+            gnetId: 14574  # NVIDIA GPU
+            revision: 1
+            datasource: Prometheus
+
+      # Ingress (optional)
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - grafana.local
+    
+    # Prometheus configuration
+    prometheus:
+      prometheusSpec:
+        retention: 30d
+        
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 50Gi
+        
+        # Scrape all ServiceMonitors
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        
+        # Additional scrape configs
+        additionalScrapeConfigs:
+          # Scrape Cilium
+          - job_name: 'cilium-agent'
+            kubernetes_sd_configs:
+              - role: pod
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_label_k8s_app]
+                action: keep
+                regex: cilium
+              - source_labels: [__address__]
+                action: replace
+                regex: ([^:]+)(?::\d+)?
+                replacement: $1:9962
+                target_label: __address__
+          
+          # Scrape Hubble
+          - job_name: 'hubble'
+            kubernetes_sd_configs:
+              - role: pod
+                namespaces:
+                  names: [kube-system]
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_label_k8s_app]
+                action: keep
+                regex: hubble
+          
+          # Scrape host metrics from neovenezia
+          - job_name: 'neovenezia-node'
+            static_configs:
+              - targets: ['neovenezia.local:9100']
+                labels:
+                  host: 'neovenezia'
+                  role: 'control-plane'
+          
+          - job_name: 'neovenezia-nvidia'
+            static_configs:
+              - targets: ['neovenezia.local:9445']
+                labels:
+                  host: 'neovenezia'
+          
+          - job_name: 'neovenezia-btrfs'
+            static_configs:
+              - targets: ['neovenezia.local:9101']
+                labels:
+                  host: 'neovenezia'
+    
+    # Node exporters on all nodes
+    prometheus-node-exporter:
+      enabled: true
+    
+    # Alert manager
+    alertmanager:
+      enabled: true
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+    
+    # Kube-state-metrics
+    kube-state-metrics:
+      enabled: true

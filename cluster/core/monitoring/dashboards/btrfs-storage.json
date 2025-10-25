@@ -1,0 +1,105 @@
+{
+  "dashboard": {
+    "title": "💾 BTRFS Backup Storage",
+    "tags": ["storage", "btrfs"],
+    "panels": [
+      {
+        "title": "BTRFS RAID Health",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 0},
+        "targets": [{
+          "expr": "btrfs_device_count{mount=\"/mnt/backup\"}",
+          "legendFormat": "Devices in Array"
+        }],
+        "options": {
+          "colorMode": "background",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 2, "color": "green"}
+            ]
+          }
+        }
+      },
+      {
+        "title": "Storage Used",
+        "type": "gauge",
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 0},
+        "targets": [{
+          "expr": "(btrfs_used_size_bytes{mount=\"/mnt/backup\"} / btrfs_total_size_bytes{mount=\"/mnt/backup\"}) * 100",
+          "legendFormat": "Used %"
+        }],
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 70, "color": "yellow"},
+                {"value": 85, "color": "red"}
+              ]
+            },
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "title": "RAID Status",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 8, "x": 16, "y": 0},
+        "targets": [{
+          "expr": "btrfs_raid_level{mount=\"/mnt/backup\",type=\"data\"}",
+          "legendFormat": "RAID Level"
+        }],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"type": "value", "value": "0", "text": "SINGLE"},
+              {"type": "value", "value": "1", "text": "RAID1"}
+            ]
+          }
+        }
+      },
+      {
+        "title": "Total Capacity",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 8, "x": 16, "y": 4},
+        "targets": [{
+          "expr": "btrfs_total_size_bytes{mount=\"/mnt/backup\"} / 1024 / 1024 / 1024 / 1024",
+          "legendFormat": "Total TB"
+        }],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "tebibytes",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "title": "Storage Usage Over Time",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "btrfs_used_size_bytes{mount=\"/mnt/backup\"} / 1024 / 1024 / 1024",
+            "legendFormat": "Used GB"
+          },
+          {
+            "expr": "btrfs_total_size_bytes{mount=\"/mnt/backup\"} / 1024 / 1024 / 1024",
+            "legendFormat": "Total GB"
+          }
+        ],
+        "yaxes": [{
+          "format": "decgbytes"
+        }]
+      }
+    ]
+  }
+}

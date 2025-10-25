@@ -1,0 +1,74 @@
+# High-performance configuration with XDP
+operator:
+  replicas: 2  # HA
+
+# Network configuration
+ipam:
+  mode: "kubernetes"
+
+kubeProxyReplacement: "true"  # Replace kube-proxy entirely
+k8sServiceHost: neovenezia.local
+k8sServicePort: 6443
+
+# Enable eBPF host routing (fastest datapath)
+routingMode: native
+autoDirectNodeRoutes: true
+ipv4NativeRoutingCIDR: 10.42.0.0/16
+
+# Enable XDP acceleration
+loadBalancer:
+  acceleration: native  # Uses XDP
+  mode: dsr  # Direct Server Return for better performance
+
+# BPF masquerading (faster than iptables)
+bpf:
+  masquerade: true
+  tproxy: true
+
+# Host firewall
+hostFirewall:
+  enabled: true
+
+# Enable Hubble for observability
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+  metrics:
+    enabled:
+      - dns
+      - drop
+      - tcp
+      - flow
+      - icmp
+      - http
+
+# BGP for LoadBalancer IPs (optional but awesome)
+bgp:
+  enabled: true
+  announce:
+    loadbalancerIP: true
+
+# WireGuard encryption (optional)
+encryption:
+  enabled: true
+  type: wireguard
+
+# Enable Gateway API support
+gatewayAPI:
+  enabled: true
+
+# CNI configuration
+cni:
+  exclusive: false  # Work with k3s
+  
+# Resource limits
+resources:
+  limits:
+    cpu: 4000m
+    memory: 4Gi
+  requests:
+    cpu: 100m
+    memory: 512Mi

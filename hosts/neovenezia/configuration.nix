@@ -14,6 +14,8 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./cachix.nix
+    ./storage.nix
+    ./backup-disko.nix
   ];
 
   hardware.graphics = {
