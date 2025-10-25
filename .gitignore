@@ -1,0 +1,17 @@
+# Secrets
+secrets/
+*.key
+*.pem
+*.age
+*.token
+
+# Build artifacts
+result
+result-*
+
+# Editor stuff
+.vscode/
+.idea/
+
+# OS stuff
+.DS_Store
