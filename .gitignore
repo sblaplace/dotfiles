@@ -1,17 +1,27 @@
 # Secrets
-secrets/
-*.key
-*.pem
-*.age
-*.token
+secrets/**/*.key
+secrets/**/*.age
+!secrets/**/*.yaml
 
 # Build artifacts
 result
 result-*
 
-# Editor stuff
+# Flake
+.direnv/
+.envrc
+
+# Editor
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# OS stuff
+# OS
 .DS_Store
+Thumbs.db
+
+# Temporary files
+/tmp/
+*.tmp
