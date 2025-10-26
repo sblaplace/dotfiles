@@ -16,6 +16,7 @@
     ./cachix.nix
     ./storage.nix
     ./backup-disko.nix
+    inputs.sops-nix.nixosModules.sops
   ];
 
   hardware.graphics = {
@@ -187,6 +188,23 @@
     helix
     direnv
   ];
+  # Tell sops where your age key is
+  sops.age.keyFile = "/var/lib/sops-nix/key.txt";
+  
+  # Or use SSH host key (automatic, no setup needed!)
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+  # Define secrets
+  sops.secrets.k3s-server-token = {
+    sopsFile = ./secrets/k3s/secrets.yaml;
+    mode = "0400";
+    owner = "root";
+  };
+
+  # Use in k3s config
+  services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;
+  # At runtime, decrypted to: /run/secrets/k3s-server-token
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
