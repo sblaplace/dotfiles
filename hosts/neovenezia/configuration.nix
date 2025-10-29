@@ -15,7 +15,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./cachix.nix
-    ./storage.nix
+    # ./storage.nix
     # ./backup-disko.nix
     inputs.sops-nix.nixosModules.sops
   ];
@@ -30,6 +30,12 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+
+  systemd.sleep.extraConfig = ''
+    AllowHibernation=no
+    AllowSuspendThenHibernate=no
+    AllowHybridSleep=no
+  '';
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
