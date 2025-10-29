@@ -38,7 +38,7 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 3;
+  boot.loader.systemd-boot.configurationLimit = 20;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
@@ -192,8 +192,6 @@
     helix
     direnv
   ];
-  # Tell sops where your age key is
-  sops.age.keyFile = "/var/lib/sops-nix/key.txt";
   
   # Or use SSH host key (automatic, no setup needed!)
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
