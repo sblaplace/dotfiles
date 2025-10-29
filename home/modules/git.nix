@@ -16,7 +16,7 @@
       };
       user = {
         name = "Sarah Laplace";
-        email = "sblaplace@gmail.com"
+        email = "sblaplace@gmail.com";
       };
       init.defaultBranch = "main";
       pull.rebase = false;
