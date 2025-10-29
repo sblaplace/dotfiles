@@ -6,6 +6,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -47,6 +48,9 @@
     preLVM = true;
     allowDiscards = true;
   };
+
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.gdm.enableGnomeKeyring = true;
 
   networking.hostName = "neovenezia"; # Define your hostname.
   # Pick only one of the below networking options.
