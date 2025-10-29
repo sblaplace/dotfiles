@@ -37,6 +37,8 @@
     AllowHybridSleep=no
   '';
 
+  home-manager.backupFileExtension = "backup";
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   services.xserver.videoDrivers = [ "nvidia" ];
