@@ -16,7 +16,7 @@
     ./hardware-configuration.nix
     ./cachix.nix
     ./storage.nix
-    ./backup-disko.nix
+    # ./backup-disko.nix
     inputs.sops-nix.nixosModules.sops
   ];
 
@@ -93,8 +93,8 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -200,7 +200,7 @@
 
   # Define secrets
   sops.secrets.k3s-server-token = {
-    sopsFile = ./secrets/k3s/secrets.yaml;
+    sopsFile = ../../secrets/k3s/secrets.yaml;
     mode = "0400";
     owner = "root";
   };
