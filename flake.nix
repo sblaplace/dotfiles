@@ -65,7 +65,6 @@
         age
         git
         kubectl
-        ssh-to-wip
       ];
       
       shellHook = ''
