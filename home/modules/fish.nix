@@ -3,7 +3,7 @@
 {
   programs.fish = {
     enable = true;
-    
+
     shellAliases = {
       ll = "ls -lah";
       ".." = "cd ..";
@@ -14,6 +14,14 @@
     shellInit = ''
       # Disable greeting
       set fish_greeting
+
+      # Direnv integration
+      direnv hook fish | source
+
+      # Nix-your-shell integration
+      if command -q nix-your-shell
+          nix-your-shell fish | source
+      end
     '';
 
     interactiveShellInit = ''

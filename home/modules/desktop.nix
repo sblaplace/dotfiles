@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.packages = with pkgs; [
@@ -31,6 +31,14 @@
     config = {
       hwdec = "auto";
       vo = "gpu";
+    };
+  };
+
+  # Set kitty as default terminal for GNOME
+  dconf.settings = {
+    "org/gnome/desktop/applications/terminal" = {
+      exec = "kitty";
+      exec-arg = "-e";
     };
   };
 }
