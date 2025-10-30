@@ -57,6 +57,22 @@
       };
     };
 
+    # Development shell for direnv
+    devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+      buildInputs = with nixpkgs.legacyPackages.x86_64-linux; [
+        deploy-rs.packages.x86_64-linux.deploy-rs
+        sops
+        age
+        git
+        kubectl
+        ssh-to-wip
+      ];
+      
+      shellHook = ''
+        echo "Cluster management shell ready."
+      '';
+    };
+
     # Deploy configuration
     deploy.nodes = {
       neovenezia = {
