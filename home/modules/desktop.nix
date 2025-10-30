@@ -34,11 +34,10 @@
     };
   };
 
-  # Set kitty as default terminal for GNOME
-  dconf.settings = {
-    "org/gnome/desktop/applications/terminal" = {
-      exec = "kitty";
-      exec-arg = "-e";
+  xdg.terminal-exec = {
+    enable = true;
+    settings = {
+      GNOME = [ "kitty.desktop" ];
     };
   };
 }
