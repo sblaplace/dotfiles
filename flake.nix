@@ -2,7 +2,7 @@
   description = "Sarah's NixOS & K3s Cluster Configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/e53d225bb626232116551eb6fbcfab0a687d0e0f";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
@@ -30,6 +30,13 @@
             home-manager.users.laplace = import ./home/laplace.nix;
             home-manager.extraSpecialArgs = { inherit hostname; };
           }
+          {
+            nixpkgs.overlays = [
+              (final: prev: {
+                cudaPackages = prev.cudaPackages_12_6;
+              })
+            ];
+          }
         ] ++ modules;
       };
   in
@@ -41,16 +48,16 @@
         hostname = "raspi01"; 
         system = "aarch64-linux";
       };
-      
+
       # Worker nodes
       t450 = mkNixosSystem { hostname = "t450"; };
       precision7730 = mkNixosSystem { hostname = "precision7730"; };
-      
+
       raspi02 = mkNixosSystem { hostname = "raspi02"; system = "aarch64-linux"; };
       raspi03 = mkNixosSystem { hostname = "raspi03"; system = "aarch64-linux"; };
       raspi04 = mkNixosSystem { hostname = "raspi04"; system = "aarch64-linux"; };
       # ... add more raspis
-      
+
       jetson = mkNixosSystem { 
         hostname = "jetson"; 
         system = "aarch64-linux";

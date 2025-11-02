@@ -120,7 +120,12 @@
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
+  services.libinput = {
+    enable = true;
+    mouse = {
+      transformationMatrix = "1.0 0 0 0 1.0 0 0 0 0.5";
+    };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.laplace = {
@@ -135,7 +140,7 @@
 
   fonts.packages = with pkgs; [
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     corefonts
     (nerd-fonts.fira-code)
   ];

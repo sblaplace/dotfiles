@@ -10,7 +10,7 @@
     discord
     mpv
     spotify
-    onlyoffice-bin
+    onlyoffice-desktopeditors
     zotero
     krita
     freecad
