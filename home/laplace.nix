@@ -34,6 +34,7 @@
     ffmpeg
     pandoc
     glow
+    claude-code
   ];
 
   # Starship prompt

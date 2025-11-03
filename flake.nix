@@ -11,9 +11,10 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
+    claude-code.url = "github:sadjow/claude-code-nix";
   };
 
-  outputs = { self, nixpkgs, home-manager, disko, sops-nix, deploy-rs, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, disko, sops-nix, deploy-rs, claude-code, ... }@inputs:
   let
     mkNixosSystem = { hostname, system ? "x86_64-linux", modules ? [] }:
       nixpkgs.lib.nixosSystem {
