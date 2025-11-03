@@ -49,6 +49,13 @@
         system = "aarch64-linux";
       };
 
+      nix.settings = {
+          download-buffer-size = 256;
+          max-jobs = "auto";
+          cores = 0;
+      };
+
+
       # Worker nodes
       t450 = mkNixosSystem { hostname = "t450"; };
       precision7730 = mkNixosSystem { hostname = "precision7730"; };
