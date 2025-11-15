@@ -1,6 +1,10 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    ./autostart.nix
+  ];
+
   home.packages = with pkgs; [
     firefox
     obsidian
