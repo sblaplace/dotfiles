@@ -21,11 +21,6 @@ My personal NixOS and Home Manager configurations for managing multiple machines
 └── home/                  # Home Manager configurations
     ├── laplace.nix        # Main home config
     ├── modules/           # Modular configs
-    │   ├── kitty.nix
-    │   ├── fish.nix
-    │   ├── git.nix
-    │   ├── development.nix
-    │   └── desktop.nix
     └── machines/          # Machine-specific overrides
 ```
 
