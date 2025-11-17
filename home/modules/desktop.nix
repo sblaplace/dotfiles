@@ -21,6 +21,7 @@
     eog
     unrar
     ytdownloader
+    godot_4
   ];
 
   # Firefox configuration (optional)
