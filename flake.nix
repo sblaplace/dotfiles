@@ -54,6 +54,9 @@
           download-buffer-size = 256;
           max-jobs = "auto";
           cores = 0;
+          substituters = [ "https://cache.nixos.org" ];
+          extra-substituters = [ "https://cuda-maintainers.cachix.org" ];
+          extra-trusted-public-keys = [ "cuda-maintainers.cachix.org-1:0dq3b12Gpjk7Tj1jtV5J3VQlGJ4G3P4cP8qSYSfl4YA=" ];
       };
 
 
