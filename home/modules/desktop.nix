@@ -23,6 +23,7 @@
     ytdownloader
     godot_4
     logisim-evolution
+    freecad
   ];
 
   # Firefox configuration (optional)

@@ -67,7 +67,6 @@
       raspi02 = mkNixosSystem { hostname = "raspi02"; system = "aarch64-linux"; };
       raspi03 = mkNixosSystem { hostname = "raspi03"; system = "aarch64-linux"; };
       raspi04 = mkNixosSystem { hostname = "raspi04"; system = "aarch64-linux"; };
-      # ... add more raspis
 
       jetson = mkNixosSystem { 
         hostname = "jetson"; 
