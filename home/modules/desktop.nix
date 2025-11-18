@@ -24,6 +24,7 @@
     godot_4
     logisim-evolution
     freecad
+    kicad
   ];
 
   # Firefox configuration (optional)
