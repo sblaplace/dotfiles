@@ -22,6 +22,7 @@
     unrar
     ytdownloader
     godot_4
+    logisim-evolution
   ];
 
   # Firefox configuration (optional)
