@@ -18,6 +18,7 @@
     # ./storage.nix
     # ./backup-disko.nix
     inputs.sops-nix.nixosModules.sops
+    ../../modules/common.nix
   ];
 
   hardware.graphics = {

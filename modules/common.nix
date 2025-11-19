@@ -12,6 +12,8 @@
     curl
     git
     htop
+    docker-compose
+    docker
   ];
 
   # SSH access
@@ -23,10 +25,15 @@
     };
   };
 
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+  };
+
   # Your user
   users.users.laplace = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "docker" ];
     openssh.authorizedKeys.keys = [
       # Add your SSH public key here
       "ssh-ed25519 AAAAC3... your-key-here"
