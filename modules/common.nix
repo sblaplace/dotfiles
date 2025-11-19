@@ -30,15 +30,8 @@
     enableOnBoot = true;
   };
 
-  # Your user
-  users.users.laplace = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ];
-    openssh.authorizedKeys.keys = [
-      # Add your SSH public key here
-      "ssh-ed25519 AAAAC3... your-key-here"
-    ];
-  };
+  # User configuration moved to host-specific files
+  # Define users.users.laplace in each host's configuration.nix instead
 
   # Automatic garbage collection
   nix.gc = {
