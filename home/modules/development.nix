@@ -8,6 +8,11 @@
     typst
     nixfmt-rfc-style
     helix
+    rustc
+    cargo
+    rustfmt
+    rust-analyzer
+    clippy
   ];
 
   # Optional: configure helix
