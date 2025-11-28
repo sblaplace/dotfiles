@@ -209,7 +209,17 @@
     helix
     direnv
   ];
+
+  hardware.opengl = {
+    enable = true;
+  };
+
+  # Enable Docker
+  virtualisation.docker.enable = true;
   
+  # CRITICAL: Enable the toolkit so Docker sees the GPU
+  hardware.nvidia-container-toolkit.enable = true;
+
   # Or use SSH host key (automatic, no setup needed!)
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
