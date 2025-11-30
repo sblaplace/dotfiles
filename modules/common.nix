@@ -25,10 +25,7 @@
     };
   };
 
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-  };
+  hardware.nvidia-container-toolkit.enable = true;
 
   # User configuration moved to host-specific files
   # Define users.users.laplace in each host's configuration.nix instead

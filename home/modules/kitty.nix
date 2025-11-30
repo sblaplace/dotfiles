@@ -41,6 +41,6 @@
     };
 
     # Tokyo Night theme
-    theme = "Tokyo Night";
+    themeFile = "tokyo_night_night";
   };
 }

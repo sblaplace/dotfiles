@@ -210,16 +210,6 @@
     direnv
   ];
 
-  hardware.opengl = {
-    enable = true;
-  };
-
-  # Enable Docker
-  virtualisation.docker = {
-    enable = true;
-    enableNvidia = true;  # This is the key setting
-  };
-
   # CRITICAL: Enable the toolkit so Docker sees the GPU
   hardware.nvidia-container-toolkit.enable = true;
 
