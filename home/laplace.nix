@@ -35,6 +35,7 @@
     pandoc
     glow
     claude-code
+    elan
   ];
 
   # Starship prompt
