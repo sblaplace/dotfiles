@@ -14,6 +14,7 @@
     htop
     docker-compose
     docker
+    bun
   ];
 
   # SSH access
