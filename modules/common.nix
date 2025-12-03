@@ -15,6 +15,7 @@
     docker-compose
     docker
     bun
+    kaggle
   ];
 
   # SSH access
