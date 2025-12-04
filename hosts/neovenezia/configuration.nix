@@ -142,6 +142,8 @@
     shell = pkgs.fish;
   };
 
+  virtualisation.docker.enable = true;
+
   fonts.packages = with pkgs; [
     noto-fonts
     noto-fonts-color-emoji
