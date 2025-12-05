@@ -8,6 +8,7 @@
     lmstudio
     vscode
     protonvpn-gui
+    protonvpn-cli
     umu-launcher
   ];
 
