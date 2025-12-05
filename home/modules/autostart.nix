@@ -10,7 +10,7 @@
         PartOf = [ "graphical-session.target" ];
       };
       Service = {
-        ExecStart = "${pkgs.protonvpn-gui}/bin/protonvpn-gui";
+        ExecStart = "${pkgs.protonvpn-gui}/bin/protonvpn-app";
         Restart = "on-failure";
       };
       Install = {
