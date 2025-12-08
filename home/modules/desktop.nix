@@ -25,6 +25,7 @@
     logisim-evolution
     freecad
     kicad
+    gum
   ];
 
   # Firefox configuration (optional)
