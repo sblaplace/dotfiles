@@ -40,7 +40,10 @@
 
   home-manager.backupFileExtension = "backup";
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -66,7 +69,27 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager = {
     enable = true;
-    wifi.backend = "iwd";
+    wifi = {
+      backend = "iwd";
+      powersave = false; # Disable power saving to prevent disconnects
+    };
+  };
+
+  # Configure iwd settings for stability
+  networking.wireless.iwd = {
+    enable = true;
+    settings = {
+      General = {
+        EnableNetworkConfiguration = true;
+        RoamThreshold = -70;
+      };
+      Network = {
+        EnableIPv6 = true;
+      };
+      Settings = {
+        AutoConnect = true;
+      };
+    };
   };
 
   # Set your time zone.
@@ -228,7 +251,6 @@
   # Use in k3s config
   services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;
   # At runtime, decrypted to: /run/secrets/k3s-server-token
-
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
