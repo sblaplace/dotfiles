@@ -1,4 +1,10 @@
-{ config, pkgs, lib, hostname ? "unknown", ... }:
+{
+  config,
+  pkgs,
+  lib,
+  hostname ? "unknown",
+  ...
+}:
 
 {
   imports = [
@@ -6,10 +12,19 @@
     ./modules/kitty.nix
     ./modules/git.nix
     ./modules/development.nix
-  ] ++ lib.optionals (builtins.elem hostname ["neovenezia" "t450" "precision7730"]) [
-    # Only import desktop apps on machines with GUI
-    ./modules/desktop.nix
-  ] ++ lib.optionals (builtins.pathExists ./machines/${hostname}.nix) [
+  ]
+  ++
+    lib.optionals
+      (builtins.elem hostname [
+        "neovenezia"
+        "t450"
+        "precision7730"
+      ])
+      [
+        # Only import desktop apps on machines with GUI
+        ./modules/desktop.nix
+      ]
+  ++ lib.optionals (builtins.pathExists ./machines/${hostname}.nix) [
     # Import machine-specific config if it exists
     (./machines + "/${hostname}.nix")
   ];
@@ -36,12 +51,19 @@
     glow
     claude-code
     elan
+    nerd-fonts.fira-code
   ];
 
   # Starship prompt
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
+    settings = {
+      nix_shell = {
+        format = "via [$symbol$state( \\($name\\))]($style) ";
+        symbol = " "; # Nerd Font Nix logo U+F313
+      };
+    };
   };
 
   # Direnv
