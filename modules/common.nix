@@ -16,6 +16,7 @@
     docker
     bun
     kaggle
+    rnote
   ];
 
   # SSH access

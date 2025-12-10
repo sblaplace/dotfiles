@@ -72,23 +72,7 @@
     wifi = {
       backend = "iwd";
       powersave = false; # Disable power saving to prevent disconnects
-    };
-  };
-
-  # Configure iwd settings for stability
-  networking.wireless.iwd = {
-    enable = true;
-    settings = {
-      General = {
-        EnableNetworkConfiguration = true;
-        RoamThreshold = -70;
-      };
-      Network = {
-        EnableIPv6 = true;
-      };
-      Settings = {
-        AutoConnect = true;
-      };
+      scanRandMacAddress = false;
     };
   };
 
