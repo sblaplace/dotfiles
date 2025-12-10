@@ -1,0 +1,43 @@
+name: Finance Hourly Log
+on:
+  schedule:
+    - cron: '0 * * * *'  # Hourly
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # MAGIC STEP 1: Restore the 'state' folder from cache
+      - name: Restore State
+        uses: actions/cache@v3
+        with:
+          path: state
+          # The key includes a hash, but 'restore-keys' allows it to fall back to the latest available cache
+          key: finance-state-${{ github.run_id }}
+          restore-keys: |
+            finance-state-
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run Sync
+        env:
+          LUNCH_MONEY_TOKEN: ${{ secrets.LUNCH_MONEY_TOKEN }} 
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: python scripts/finance_sync.py
+
+      # MAGIC STEP 2: Save the 'state' folder back to cache
+      - name: Save State
+        if: always() # Run even if script fails, though usually we want success
+        uses: actions/cache/save@v3
+        with:
+          path: state
+          key: finance-state-${{ github.run_id }}
