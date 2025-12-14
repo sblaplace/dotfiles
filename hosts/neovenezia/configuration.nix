@@ -19,6 +19,7 @@
     # ./backup-disko.nix
     inputs.sops-nix.nixosModules.sops
     ../../modules/common.nix
+    ../../modules/virtualization.nix
   ];
 
   hardware.graphics = {
