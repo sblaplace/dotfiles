@@ -125,7 +125,17 @@
     shell = pkgs.fish;
   };
 
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+  enable = true;
+  daemon.settings = {
+    runtimes.nvidia = {
+      path = "${pkgs.nvidia-container-toolkit}/bin/nvidia-container-runtime";
+      runtimeArgs = [];
+      };
+    };
+  };
+
+  hardware.nvidia-container-toolkit.enable = true;
 
   fonts.packages = with pkgs; [
     noto-fonts
@@ -194,9 +204,8 @@
     winetricks
     helix
     direnv
+    nvidia-container-toolkit
   ];
-
-  hardware.nvidia-container-toolkit.enable = true;
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 

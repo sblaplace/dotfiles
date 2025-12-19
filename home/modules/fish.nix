@@ -9,6 +9,11 @@
       ".." = "cd ..";
       rebuild = "sudo nixos-rebuild switch --flake ~/dotfiles#$(hostname)";
       home-rebuild = "home-manager switch --flake ~/dotfiles#laplace@$(hostname)";
+      
+      # GPU-enabled Docker shortcuts
+      dkgpu = "docker run --rm --gpus all";
+      dkgpush = "docker run --rm --gpus all -it";
+      cuda-test = "docker run --rm --gpus all nvidia/cuda:12.6.2-base-ubuntu22.04 nvidia-smi";
     };
 
     shellInit = ''
