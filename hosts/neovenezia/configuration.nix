@@ -48,12 +48,10 @@
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 20;
 
-  # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
 
   boot.initrd.luks.devices."cryptroot" = {
@@ -65,31 +63,22 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.gdm.enableGnomeKeyring = true;
 
-  networking.hostName = "neovenezia"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "neovenezia";
   networking.networkmanager = {
     enable = true;
     wifi = {
       backend = "iwd";
-      powersave = false; # Disable power saving to prevent disconnects
+      powersave = false;
       scanRandMacAddress = false;
     };
   };
 
-  # Set your time zone.
   time.timeZone = "America/Chicago";
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-    # keyMap = "us";
-    useXkbConfig = true; # use xkb.options in tty.
+    useXkbConfig = true;
   };
 
   programs.nix-ld.libraries = with pkgs; [
@@ -109,29 +98,16 @@
     };
   };
 
-  # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable sound.
-  # services.pulseaudio.enable = true;
-  # OR
   services.pipewire = {
     enable = true;
     pulse.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
   services.libinput = {
     enable = true;
     mouse = {
@@ -139,7 +115,6 @@
     };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.laplace = {
     isNormalUser = true;
     extraGroups = [
@@ -182,7 +157,6 @@
         email = "sblaplace@gmail.com";
       };
 
-      # Add other system-wide Git configuration here, e.g., default branch
       init.defaultBranch = "main";
     };
     lfs.enable = true;
@@ -196,9 +170,9 @@
 
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
     extraPackages = [ pkgs.proton-ge-bin ];
   };
 
@@ -209,15 +183,11 @@
   services.udev.packages = [ pkgs.gnome-settings-daemon ];
 
   services.udev.extraRules = ''
-    # Replace YOUR-BTRFS-UUID with the actual UUID from blkid
-    # Replace /dev/sdc with whichever duplicate device(s) you want to hide
     ENV{ID_FS_UUID}=="5f6f11fc-59c7-4a58-ad0b-c60e8674a469", ENV{DEVNAME}=="/dev/sdc", ENV{UDISKS_IGNORE}="1"
     '';
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    vim
     wget
     gnomeExtensions.appindicator
     wineWowPackages.stable
@@ -226,22 +196,17 @@
     direnv
   ];
 
-  # CRITICAL: Enable the toolkit so Docker sees the GPU
   hardware.nvidia-container-toolkit.enable = true;
 
-  # Or use SSH host key (automatic, no setup needed!)
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-  # Define secrets
   sops.secrets.k3s-server-token = {
     sopsFile = ../../secrets/k3s/secrets.yaml;
     mode = "0400";
     owner = "root";
   };
 
-  # Use in k3s config
   services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;
-  # At runtime, decrypted to: /run/secrets/k3s-server-token
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
