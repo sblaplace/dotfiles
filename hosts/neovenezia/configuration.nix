@@ -208,6 +208,12 @@
 
   services.udev.packages = [ pkgs.gnome-settings-daemon ];
 
+  services.udev.extraRules = ''
+    # Replace YOUR-BTRFS-UUID with the actual UUID from blkid
+    # Replace /dev/sdc with whichever duplicate device(s) you want to hide
+    ENV{ID_FS_UUID}=="5f6f11fc-59c7-4a58-ad0b-c60e8674a469", ENV{DEVNAME}=="/dev/sdc", ENV{UDISKS_IGNORE}="1"
+    '';
+
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
