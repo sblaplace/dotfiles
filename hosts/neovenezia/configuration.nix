@@ -126,13 +126,8 @@
   };
 
   virtualisation.docker = {
-  enable = true;
-  daemon.settings = {
-    runtimes.nvidia = {
-      path = "${pkgs.nvidia-container-toolkit}/bin/nvidia-container-runtime";
-      runtimeArgs = [];
-      };
-    };
+    enable = true;
+    enableNvidia = true;
   };
 
   hardware.nvidia-container-toolkit.enable = true;
@@ -205,6 +200,7 @@
     helix
     direnv
     nvidia-container-toolkit
+    dosbox-staging
   ];
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
