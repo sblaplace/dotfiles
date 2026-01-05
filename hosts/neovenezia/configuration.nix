@@ -189,6 +189,7 @@
 
   services.udev.extraRules = ''
     ENV{ID_FS_UUID}=="5f6f11fc-59c7-4a58-ad0b-c60e8674a469", ENV{DEVNAME}=="/dev/sdc", ENV{UDISKS_IGNORE}="1"
+    ENV{ID_PATH}=="pci-0000:01:00.0", TAG+="mutter-device-preferred-primary"
     '';
 
   environment.systemPackages = with pkgs; [
