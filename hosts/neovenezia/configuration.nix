@@ -33,6 +33,8 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  services.switcherooControl.enable = true;
+
   systemd.sleep.extraConfig = ''
     AllowHibernation=no
     AllowSuspendThenHibernate=no
@@ -59,6 +61,9 @@
     preLVM = true;
     allowDiscards = true;
   };
+
+  boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.gdm.enableGnomeKeyring = true;
