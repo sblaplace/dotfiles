@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -26,6 +31,9 @@
     freecad
     kicad
     gum
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
   ];
 
   # Firefox configuration (optional)
@@ -38,7 +46,7 @@
   programs.mpv = {
     enable = true;
     config = {
-      hwdec = "auto";
+      hwdec = "auto-safe";
       vo = "gpu";
     };
   };
