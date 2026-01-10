@@ -46,7 +46,7 @@
   programs.mpv = {
     enable = true;
     config = {
-      hwdec = "auto-safe";
+      hwdec = "no";
       vo = "gpu";
     };
   };
