@@ -55,8 +55,7 @@
   boot.loader.systemd-boot.configurationLimit = 10;
 
   nix.gc.automatic = true;
-  nix.gc.dates = "weekly";                          # or "daily" [][]
-  nix.gc.options = "--delete-older-than 14d";       # tune to how often you upgrade [][]
+  nix.gc.dates = "weekly";
 
   boot.kernelPackages = pkgs.linuxPackages;
 
