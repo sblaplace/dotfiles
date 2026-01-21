@@ -52,7 +52,11 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.configurationLimit = 20;
+  boot.loader.systemd-boot.configurationLimit = 10;
+
+  nix.gc.automatic = true;
+  nix.gc.dates = "weekly";                          # or "daily" [][]
+  nix.gc.options = "--delete-older-than 14d";       # tune to how often you upgrade [][]
 
   boot.kernelPackages = pkgs.linuxPackages;
 
