@@ -6,7 +6,7 @@
     python3
     dotnet-sdk_8
     typst
-    nixfmt-rfc-style
+    nixfmt
     helix
     rustc
     cargo
