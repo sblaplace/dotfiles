@@ -51,21 +51,7 @@
             {
               nixpkgs.overlays = [
                 (final: prev: {
-                  cudaPackages = prev.cudaPackages_12_6;
-                })
-                (final: prev: {
                   wireplumber = nixos-stable.legacyPackages.${prev.system}.wireplumber;
-                })
-                (final: prev: {
-                  pagmo2 = prev.pagmo2.overrideAttrs (old: {
-                    postFixup = (old.postFixup or "") + ''
-                      if [ -d "$dev/lib/cmake/pagmo" ]; then
-                        for f in "$dev"/lib/cmake/pagmo/*.cmake; do
-                          sed -i 's|\''${_IMPORT_PREFIX}/include|'"$dev"'/include|g' "$f"
-                        done
-                      fi
-                    '';
-                  });
                 })
               ];
             }
