@@ -40,5 +40,5 @@
     options = "--delete-older-than 30d";
   };
 
-  stdenv.hostPlatform.system.stateVersion = "25.05";
+  system.stateVersion = "25.05";
 }
