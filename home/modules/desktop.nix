@@ -42,6 +42,12 @@
     # You can add profiles and settings here
   };
 
+  dconf.settings = {
+    "org/gnome/mutter" = {
+        experimental-features = [ "scale-monitor-framebuffer" ];
+      };
+  };
+
   # MPV configuration (optional)
   programs.mpv = {
     enable = true;
