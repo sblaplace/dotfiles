@@ -51,7 +51,7 @@
             {
               nixpkgs.overlays = [
                 (final: prev: {
-                  wireplumber = nixos-stable.legacyPackages.${prev.system}.wireplumber;
+                  wireplumber = nixos-stable.legacyPackages.${prev.stdenv.hostPlatform.system}.wireplumber;
                 })
               ];
             }
