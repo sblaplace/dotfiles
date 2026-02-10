@@ -3,7 +3,7 @@ name: Update Flake Lock
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 5 * * 0' # Weekly on Sunday at 5am
+    - cron: '0 5 * * *' # Daily at 5am
 
 jobs:
   update-flake-lock:
