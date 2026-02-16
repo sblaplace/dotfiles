@@ -23,6 +23,9 @@
     ../../modules/tailscale.nix
   ];
 
+  # Configure Tailscale exit node (DigitalOcean)
+  services.tailscale.exitNode = "100.110.16.6";
+
   hardware.graphics = {
     enable = true;
   };
