@@ -2,27 +2,11 @@
 
 {
   systemd.user.services = {
-    # Tier 1: Critical services that start immediately
-    protonvpn = {
-      Unit = {
-        Description = "ProtonVPN";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${pkgs.protonvpn-gui}/bin/protonvpn-app";
-        Restart = "on-failure";
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
-
-    # Tier 2: Background services with delayed startup
+    # Background services
     discord = {
       Unit = {
         Description = "Discord";
-        After = [ "graphical-session.target" "protonvpn.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "idle";  # Waits until active jobs are dispatched
@@ -37,7 +21,7 @@
     qbittorrent = {
       Unit = {
         Description = "Qbittorrent";
-        After = [ "graphical-session.target" "protonvpn.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "idle";  # Waits until active jobs are dispatched
@@ -52,7 +36,7 @@
     steam = {
       Unit = {
         Description = "Steam";
-        After = [ "graphical-session.target" "protonvpn.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "idle";  # Waits until active jobs are dispatched
@@ -67,7 +51,7 @@
     obsidian = {
       Unit = {
         Description = "Obsidian";
-        After = [ "graphical-session.target" "protonvpn.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "idle";  # Waits until active jobs are dispatched
@@ -82,7 +66,7 @@
     vscode = {
       Unit = {
         Description = "VScode";
-        After = [ "graphical-session.target" "protonvpn.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "idle";  # Waits until active jobs are dispatched
