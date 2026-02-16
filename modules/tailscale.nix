@@ -24,18 +24,30 @@
     tailscale
   ];
 
-  # After enabling, authenticate and select the DO exit node:
-  #   sudo tailscale up --exit-node=<your-DO-exit-node>
-  #
-  # To make exit node persistent across reboots, you can add a systemd service like:
-  # systemd.services.tailscale-exit-node = {
-  #   description = "Configure Tailscale exit node";
-  #   after = [ "tailscale.service" ];
-  #   wants = [ "tailscale.service" ];
-  #   wantedBy = [ "multi-user.target" ];
-  #   serviceConfig = {
-  #     Type = "oneshot";
-  #     ExecStart = "${pkgs.tailscale}/bin/tailscale up --exit-node=<your-DO-exit-node>";
-  #   };
-  # };
+  # Automatically connect to DO exit node on boot
+  # To configure: Set the exit node hostname in your host-specific config with:
+  #   services.tailscale.exitNode = "your-do-hostname";
+  systemd.services.tailscale-exit-node = {
+    description = "Configure Tailscale exit node";
+    after = [ "tailscale.service" ];
+    wants = [ "tailscale.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      # Use --accept-routes to also receive subnet routes from exit node if configured
+      ExecStart = "${pkgs.tailscale}/bin/tailscale up --exit-node=\${EXIT_NODE} --accept-routes";
+    };
+    # Set EXIT_NODE environment variable from host config
+    environment.EXIT_NODE = 
+      if config.services.tailscale ? exitNode && config.services.tailscale.exitNode != null
+      then config.services.tailscale.exitNode
+      else "";
+    # Only start if EXIT_NODE is configured
+    unitConfig.ConditionPathExists = 
+      pkgs.writeText "tailscale-exit-node-check" 
+        (if config.services.tailscale ? exitNode && config.services.tailscale.exitNode != null && config.services.tailscale.exitNode != ""
+         then "configured"
+         else "");
+  };
 }
