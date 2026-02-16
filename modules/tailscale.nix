@@ -2,54 +2,82 @@
 
 let
   cfg = config.services.tailscale;
+  
+  # NetworkManager dispatcher script to handle LAN awareness
+  lanAwarenessScript = pkgs.writeShellScript "tailscale-lan-awareness" ''
+    INTERFACE=$1
+    ACTION=$2
+
+    # Exit if not wifi
+    if [ "$INTERFACE" != "wlan0" ] && [ "$INTERFACE" != "wlp1s0" ] && [ "$INTERFACE" != "wlp2s0" ]; then
+      exit 0
+    fi
+
+    SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
+    HOME_SSID="Little Pink Houses"
+
+    case "$ACTION" in
+      up|vpn-up)
+        if [ "$SSID" = "$HOME_SSID" ]; then
+          # On Home LAN: Disable exit node
+          ${pkgs.tailscale}/bin/tailscale up --exit-node= --accept-routes
+        else
+          # Not on Home LAN: Enable exit node if configured
+          if [ -n "${cfg.exitNode}" ]; then
+            ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes
+          fi
+        fi
+        ;;
+      down|vpn-down)
+        # If we lose wifi but have another connection, ensure exit node is back on if configured
+        if [ -n "${cfg.exitNode}" ]; then
+          ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes
+        fi
+        ;;
+    esac
+  '';
 in
 {
   options.services.tailscale = {
     exitNode = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      description = '';
-        Tailscale exit node to automatically connect to on boot.
+      description = ''
+        Tailscale exit node to automatically connect to on boot or when leaving LAN.
         Can be specified as a node name or tailnet IP (e.g. "100.110.16.6").
-        Set to null or empty string to disable automatic exit node connection.
       '';
     };
   };
 
   config = {
-    # Enable Tailscale service
     services.tailscale.enable = true;
 
-    # Configure firewall for Tailscale
     networking.firewall = {
-      # NOTE: Your host config already sets `networking.firewall.checkReversePath = false;`.
-      # Nix's option merging for this option doesn't allow mixing boolean + string values
-      # across modules, so we do NOT set it here.
-      # If you remove the host-level setting, consider setting it to "loose" (or false)
-      # for best compatibility with Tailscale.
-
-      # Allow Tailscale UDP port
       allowedUDPPorts = [ cfg.port ];
-
-      # Trust Tailscale interface (so services you explicitly listen on can be reached via tailscale0)
       trustedInterfaces = [ "tailscale0" ];
     };
 
-    # Add tailscale CLI to system packages
     environment.systemPackages = with pkgs; [
       tailscale
     ];
 
-    # Automatically connect to exit node on boot (only if configured)
+    # Register the dispatcher script
+    networking.networkmanager.dispatcherScripts = [
+      {
+        source = lanAwarenessScript;
+        type = "basic";
+      }
+    ];
+
+    # Initial connection on boot
     systemd.services.tailscale-exit-node = lib.mkIf (cfg.exitNode != null && cfg.exitNode != "") {
       description = "Configure Tailscale exit node";
-      after = [ "tailscale.service" ];
-      wants = [ "tailscale.service" ];
+      after = [ "tailscale.service" "network-online.target" ];
+      wants = [ "tailscale.service" "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        # Use --accept-routes to receive subnet routes from exit node if configured
         ExecStart = "${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes";
       };
     };
