@@ -20,6 +20,7 @@
     inputs.sops-nix.nixosModules.sops
     ../../modules/common.nix
     ../../modules/virtualization.nix
+    ../../modules/tailscale.nix
   ];
 
   hardware.graphics = {
