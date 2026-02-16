@@ -190,7 +190,16 @@
 
   networking.firewall.checkReversePath = false;
 
-  system.autoUpgrade.enable = true;
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:sblaplace/dotfiles";
+    flags = [
+      "-L" # Print build logs to journald
+    ];
+    dates = "04:00";
+    randomizedDelaySec = "45min";
+    allowReboot = false;
+  };
 
   services.udev.packages = [ pkgs.gnome-settings-daemon ];
 
