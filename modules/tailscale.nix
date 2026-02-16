@@ -6,11 +6,16 @@
 
   # Configure firewall for Tailscale
   networking.firewall = {
-    # Tailscale uses loose reverse path filtering
-    checkReversePath = "loose";
+    # NOTE: Your host config already sets `networking.firewall.checkReversePath = false;`.
+    # Nix's option merging for this option doesn't allow mixing boolean + string values
+    # across modules, so we do NOT set it here.
+    # If you remove the host-level setting, consider setting it to "loose" (or false)
+    # for best compatibility with Tailscale.
+
     # Allow Tailscale UDP port
     allowedUDPPorts = [ config.services.tailscale.port ];
-    # Trust Tailscale interface
+
+    # Trust Tailscale interface (so services you explicitly listen on can be reached via tailscale0)
     trustedInterfaces = [ "tailscale0" ];
   };
 
@@ -19,10 +24,10 @@
     tailscale
   ];
 
-  # Note: After enabling, authenticate with:
+  # After enabling, authenticate and select the DO exit node:
   #   sudo tailscale up --exit-node=<your-DO-exit-node>
-  # 
-  # To make exit node persistent across reboots, you can add a systemd service:
+  #
+  # To make exit node persistent across reboots, you can add a systemd service like:
   # systemd.services.tailscale-exit-node = {
   #   description = "Configure Tailscale exit node";
   #   after = [ "tailscale.service" ];
