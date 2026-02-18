@@ -54,6 +54,24 @@
       };
     };
 
+  xmltodict-pinned = let
+    pname = "xmltodict";
+    version = "0.13.0";
+  in
+    pythonPackages.buildPythonPackage {
+      inherit pname version;
+      format = "setuptools";
+      src = pkgs.fetchPypi {
+        inherit pname version;
+        hash = "sha256-NBWDFy67csXzHLbuSeSL2q24hP42SJd5pC6RXPhj0Wo=";
+      };
+      meta = with pkgs.lib; {
+        description = "Makes working with XML feel like you are working with JSON";
+        homepage = "https://github.com/martinblech/xmltodict";
+        license = licenses.mit;
+      };
+    };
+
   chardet-pkg = let
     pname = "chardet";
     version = "5.2.0";
@@ -114,9 +132,9 @@
       nativeBuildInputs = with pythonPackages; [
         hatchling
       ];
-      propagatedBuildInputs = with pythonPackages; [
-        beautifulsoup4
-        xmltodict
+      propagatedBuildInputs = [
+        pythonPackages.beautifulsoup4
+        xmltodict-pinned
       ];
       meta = with pkgs.lib; {
         description = "A simple epub parser";
