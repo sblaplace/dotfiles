@@ -21,10 +21,18 @@
     ../../modules/common.nix
     ../../modules/virtualization.nix
     ../../modules/tailscale.nix
+    ../../modules/lute.nix
   ];
 
   # Configure Tailscale exit node (DigitalOcean)
   services.tailscale.exitNode = "100.110.16.6";
+
+  # Enable Lute language learning server
+  services.lute = {
+    enable = true;
+    port = 5006;
+    openFirewall = true;
+  };
 
   hardware.graphics = {
     enable = true;
