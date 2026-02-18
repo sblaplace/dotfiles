@@ -63,7 +63,7 @@
       format = "setuptools";
       src = pkgs.fetchPypi {
         inherit pname version;
-        hash = "sha256-NBWDFy67csXzHLbuSeSL2q24hP42SJd5pC6RXPhj0Wo=";
+        hash = "sha256-NBWVpIjj4BqFqdiRHYkS/ZIu3l/sxNzkN+tLbI0DflY=";
       };
       meta = with pkgs.lib; {
         description = "Makes working with XML feel like you are working with JSON";
