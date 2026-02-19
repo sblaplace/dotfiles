@@ -19,7 +19,16 @@
       OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
       # Helper to keep the interface clean
       ANONYMOUS_USAGE_STATS = "false";
+      GLOBAL_LOG_LEVEL = "DEBUG";
     };
   };
+
+  systemd.services.open-webui.path = with pkgs; [
+    bash
+    curl
+    coreutils
+    nodejs      # Required if using any MCP-based tools
+    python3     # Required for native Workspace tools
+  ];
 }
 
