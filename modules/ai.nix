@@ -4,7 +4,7 @@
   # 1. Enable Ollama Backend
   services.ollama = {
     enable = true;
-    acceleration = "cuda"; # Uses your NVIDIA GPU
+    package = pkgs.ollama-cuda; # Uses your NVIDIA GPU
     # listenAddress = "127.0.0.1:11434"; # Default, strictly local
   };
 
