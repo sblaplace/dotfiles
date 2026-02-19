@@ -22,6 +22,7 @@
     ../../modules/virtualization.nix
     ../../modules/tailscale.nix
     ../../modules/lute.nix
+    ../../modules/ai.nix
   ];
 
   # Configure Tailscale exit node (DigitalOcean)
