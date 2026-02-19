@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # 1. Enable Ollama Backend
@@ -11,7 +16,7 @@
   # 2. Enable Open WebUI Frontend
   services.open-webui = {
     enable = true;
-    port = 8082; 
+    port = 8082;
     openFirewall = true; # Open port 8080 in the firewall
     host = "0.0.0.0"; # Listen on all interfaces so you can access it from other devices
     environment = {
@@ -27,8 +32,14 @@
     bash
     curl
     coreutils
-    nodejs      # Required if using any MCP-based tools
-    python3     # Required for native Workspace tools
+    nodejs
+    (python3.withPackages (
+      ps: with ps; [
+        requests
+        aiohttp
+        beautifulsoup4
+        pydantic
+      ]
+    ))
   ];
 }
-
