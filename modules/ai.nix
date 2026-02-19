@@ -11,7 +11,7 @@
   # 2. Enable Open WebUI Frontend
   services.open-webui = {
     enable = true;
-    port = 8081; 
+    port = 8082; 
     openFirewall = true; # Open port 8080 in the firewall
     host = "0.0.0.0"; # Listen on all interfaces so you can access it from other devices
     environment = {
