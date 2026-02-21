@@ -208,10 +208,13 @@
     flake = "github:sblaplace/dotfiles";
     flags = [
       "-L" # Print build logs to journald
+      "--recreate-lock-file" # Forces Nix to update the lockfile during the remote build
+      "--commit-lock-file"   # Optional: attempts to commit it if you were building locally
     ];
     dates = "04:00";
     randomizedDelaySec = "45min";
     allowReboot = false;
+    persistent = true;
   };
 
   services.udev.packages = [ pkgs.gnome-settings-daemon ];
