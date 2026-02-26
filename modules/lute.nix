@@ -5,16 +5,18 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.services.lute;
 
-  python = pkgs.python311;
+  python = pkgs.python312;
   pythonPackages = python.pkgs;
 
-  platformdirs-pinned = let
-    pname = "platformdirs";
-    version = "3.11.0";
-  in
+  platformdirs-pinned =
+    let
+      pname = "platformdirs";
+      version = "3.12.0";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "pyproject";
@@ -33,10 +35,11 @@
       };
     };
 
-  waitress-pinned = let
-    pname = "waitress";
-    version = "2.1.2";
-  in
+  waitress-pinned =
+    let
+      pname = "waitress";
+      version = "2.1.2";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "pyproject";
@@ -54,10 +57,11 @@
       };
     };
 
-  xmltodict-pinned = let
-    pname = "xmltodict";
-    version = "0.13.0";
-  in
+  xmltodict-pinned =
+    let
+      pname = "xmltodict";
+      version = "0.13.0";
+    in
     pythonPackages.buildPythonPackage {
       inherit pname version;
       format = "setuptools";
@@ -72,10 +76,11 @@
       };
     };
 
-  chardet-pkg = let
-    pname = "chardet";
-    version = "5.2.0";
-  in
+  chardet-pkg =
+    let
+      pname = "chardet";
+      version = "5.2.0";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "pyproject";
@@ -93,10 +98,11 @@
       };
     };
 
-  subtitle-parser-pkg = let
-    pname = "subtitle_parser";
-    version = "2.0.1";
-  in
+  subtitle-parser-pkg =
+    let
+      pname = "subtitle_parser";
+      version = "2.0.1";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "pyproject";
@@ -118,10 +124,11 @@
       };
     };
 
-  openepub-pkg = let
-    pname = "openepub";
-    version = "0.0.9";
-  in
+  openepub-pkg =
+    let
+      pname = "openepub";
+      version = "0.0.9";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "pyproject";
@@ -143,10 +150,11 @@
       };
     };
 
-  natto-py-pkg = let
-    pname = "natto-py";
-    version = "1.0.1";
-  in
+  natto-py-pkg =
+    let
+      pname = "natto-py";
+      version = "1.0.1";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "setuptools";
@@ -154,8 +162,8 @@
         inherit pname version;
         hash = "sha256-dgEDuzlyMu4DPJkk0TV+MrFCu+Ey/GpDuM+C3WtlToY=";
       };
-      nativeBuildInputs = [pkgs.mecab];
-      propagatedBuildInputs = with pythonPackages; [cffi];
+      nativeBuildInputs = [ pkgs.mecab ];
+      propagatedBuildInputs = with pythonPackages; [ cffi ];
 
       meta = with pkgs.lib; {
         description = "A Python wrapper for MeCab";
@@ -164,10 +172,11 @@
       };
     };
 
-  jaconv-pkg = let
-    pname = "jaconv";
-    version = "0.3.4";
-  in
+  jaconv-pkg =
+    let
+      pname = "jaconv";
+      version = "0.3.4";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "setuptools";
@@ -182,10 +191,11 @@
       };
     };
 
-  lute-pkg = let
-    pname = "lute3";
-    version = "3.10.1";
-  in
+  lute-pkg =
+    let
+      pname = "lute3";
+      version = "3.10.1";
+    in
     pythonPackages.buildPythonApplication {
       inherit pname version;
       format = "pyproject";
@@ -229,7 +239,8 @@
         license = licenses.mit;
       };
     };
-in {
+in
+{
   options.services.lute = {
     enable = lib.mkEnableOption "enable lute language server";
 
@@ -281,7 +292,7 @@ in {
       group = "lute";
       description = "Lute service user";
     };
-    users.groups.lute = {};
+    users.groups.lute = { };
 
     systemd.tmpfiles.rules = [
       "d '${cfg.dataDir}' 0755 lute lute -"
@@ -290,9 +301,9 @@ in {
 
     systemd.services.lute = {
       description = "Lute V3 Language Server";
-      after = ["network-online.target"];
-      wants = ["network-online.target"];
-      wantedBy = ["multi-user.target"];
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
         User = "lute";
@@ -305,6 +316,6 @@ in {
       };
     };
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [cfg.port];
+    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
   };
 }
