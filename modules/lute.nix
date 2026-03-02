@@ -15,7 +15,7 @@ let
   platformdirs-pinned =
     let
       pname = "platformdirs";
-      version = "3.12.0";
+      version = "3.11.0";
     in
     pythonPackages.buildPythonApplication {
       inherit pname version;
