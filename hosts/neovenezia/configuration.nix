@@ -229,7 +229,7 @@
     vim
     wget
     gnomeExtensions.appindicator
-    wineWowPackages.stable
+    wineWow64Packages.stable
     winetricks
     helix
     direnv
