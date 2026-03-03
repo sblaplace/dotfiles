@@ -157,6 +157,7 @@
     noto-fonts-color-emoji
     corefonts
     (nerd-fonts.fira-code)
+    crimson
   ];
 
   programs.fish.interactiveShellInit = ''
