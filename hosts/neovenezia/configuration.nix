@@ -158,6 +158,7 @@
     corefonts
     (nerd-fonts.fira-code)
     crimson
+    gyre-fonts
   ];
 
   programs.fish.interactiveShellInit = ''
