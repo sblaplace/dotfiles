@@ -48,12 +48,6 @@
 
   services.switcherooControl.enable = true;
 
-  systemd.sleep.extraConfig = ''
-    AllowHibernation=no
-    AllowSuspendThenHibernate=no
-    AllowHybridSleep=no
-  '';
-
   home-manager.backupFileExtension = "backup";
 
   nix.settings.experimental-features = [
