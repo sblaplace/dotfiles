@@ -36,6 +36,7 @@
     gst_all_1.gst-plugins-ugly
     f3d
     kdePackages.kdenlive
+    shotcut
   ];
 
   # Firefox configuration (optional)
