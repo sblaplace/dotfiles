@@ -1,6 +1,7 @@
 # Sarah's NixOS & Home Manager Configuration
 
-My personal NixOS and Home Manager configurations for managing multiple machines with shared dotfiles.
+My personal NixOS and Home Manager configurations for managing multiple machines
+with shared dotfiles.
 
 ## 🖥️ Machines
 
@@ -57,10 +58,12 @@ nix run home-manager/master -- switch --flake ~/dotfiles#laplace@$(hostname)
 ### Adding a New Machine
 
 1. Create host directory: `mkdir -p hosts/newmachine`
-2. Copy hardware config: `sudo cp /etc/nixos/hardware-configuration.nix hosts/newmachine/`
+2. Copy hardware config:
+   `sudo cp /etc/nixos/hardware-configuration.nix hosts/newmachine/`
 3. Create `hosts/newmachine/configuration.nix`
 4. Add to `flake.nix` under `nixosConfigurations`
-5. (Optional) Create `home/machines/newmachine.nix` for machine-specific home config
+5. (Optional) Create `home/machines/newmachine.nix` for machine-specific home
+   config
 
 ## 🔄 Daily Workflow
 
