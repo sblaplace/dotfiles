@@ -72,7 +72,12 @@
     allowDiscards = true;
   };
 
-  boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  boot.initrd.kernelModules = [
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_uvm"
+    "nvidia_drm"
+  ];
   boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
   services.gnome.gnome-keyring.enable = true;
@@ -99,6 +104,8 @@
   programs.nix-ld.libraries = with pkgs; [
     icu
     dotnet-sdk_8
+    stdenv.cc.cc.lib
+    zlib
   ];
   programs.nix-ld.enable = true;
   programs.appimage = {
@@ -205,7 +212,7 @@
     flags = [
       "-L" # Print build logs to journald
       "--recreate-lock-file" # Forces Nix to update the lockfile during the remote build
-      "--commit-lock-file"   # Optional: attempts to commit it if you were building locally
+      "--commit-lock-file" # Optional: attempts to commit it if you were building locally
     ];
     dates = "04:00";
     randomizedDelaySec = "45min";
@@ -218,7 +225,7 @@
   services.udev.extraRules = ''
     ENV{ID_FS_UUID}=="5f6f11fc-59c7-4a58-ad0b-c60e8674a469", ENV{DEVNAME}=="/dev/sdc", ENV{UDISKS_IGNORE}="1"
     ENV{ID_PATH}=="pci-0000:01:00.0", TAG+="mutter-device-preferred-primary"
-    '';
+  '';
 
   environment.systemPackages = with pkgs; [
     vim
