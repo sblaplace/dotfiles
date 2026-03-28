@@ -37,6 +37,7 @@
     f3d
     kdePackages.kdenlive
     shotcut
+    awscli2
   ];
 
   # Firefox configuration (optional)
