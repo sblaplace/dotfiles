@@ -38,6 +38,7 @@
     kdePackages.kdenlive
     shotcut
     awscli2
+    restic
   ];
 
   # Firefox configuration (optional)
