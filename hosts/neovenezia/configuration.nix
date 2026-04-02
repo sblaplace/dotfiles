@@ -43,17 +43,11 @@
     modesetting.enable = true;
     open = false;
     nvidiaSettings = true;
-    # GTX 1080 Ti (Pascal/GP102) requires the 570.x branch.
-    # nixpkgs 26.05 bumped stable/production to 595 which dropped Pascal.
-    # 570.x is the last branch with full Pascal support before 580 EOL.
-    # TODO: evaluate pinning to 580.x once hashes are available in nixpkgs.
-    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version = "570.133.07";
-      sha256_64bit = "sha256-LUPmTFgb5e9VTemIixqpADfvbUX1QoTT2dztwI3E3CY=";
-      openSha256 = "sha256-9l8N83Spj0MccA8+8R1uqiXBS0Ag4JrLPjrU3TaXHnM=";
-      settingsSha256 = "sha256-XMk+FvTlGpMquM8aE8kgYK2PIEszUZD2+Zmj2OpYrzU=";
-      usePersistenced = false;
-    };
+    # GTX 1080 Ti (Pascal/GP102) needs the legacy Pascal-capable branch.
+    # Prefer nixpkgs' packaged 580 branch over a handwritten mkDriver pin.
+    # If 580 stops building on this kernel, fall back to the last known good
+    # generation rather than reintroducing a custom driver derivation here.
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
   services.switcherooControl.enable = true;
@@ -90,7 +84,10 @@
     "nvidia_uvm"
     "nvidia_drm"
   ];
-  boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia.NVreg_EnableGpuFirmware=0" ];
+  boot.kernelParams = [
+    "nvidia-drm.modeset=1"
+    "nvidia.NVreg_EnableGpuFirmware=0"
+  ];
 
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.gdm.enableGnomeKeyring = true;
