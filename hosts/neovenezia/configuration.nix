@@ -43,7 +43,17 @@
     modesetting.enable = true;
     open = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    # GTX 1080 Ti (Pascal/GP102) requires the 570.x branch.
+    # nixpkgs 26.05 bumped stable/production to 595 which dropped Pascal.
+    # 570.x is the last branch with full Pascal support before 580 EOL.
+    # TODO: evaluate pinning to 580.x once hashes are available in nixpkgs.
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version = "570.133.07";
+      sha256_64bit = "sha256-LUPmTFgb5e9VTemIixqpADfvbUX1QoTT2dztwI3E3CY=";
+      openSha256 = "sha256-9l8N83Spj0MccA8+8R1uqiXBS0Ag4JrLPjrU3TaXHnM=";
+      settingsSha256 = "sha256-XMk+FvTlGpMquM8aE8kgYK2PIEszUZD2+Zmj2OpYrzU=";
+      usePersistenced = false;
+    };
   };
 
   services.switcherooControl.enable = true;
@@ -64,7 +74,9 @@
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
 
-  boot.kernelPackages = pkgs.linuxPackages;
+  # Pinned to LTS kernel — legacy NVIDIA drivers (570.x) have build issues
+  # with latest kernels. Keep pinned until driver situation is resolved.
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   boot.initrd.luks.devices."cryptroot" = {
     device = "/dev/disk/by-uuid/cd67d0ba-0e7a-4308-9bb9-1be2f9a07e17";
@@ -78,7 +90,7 @@
     "nvidia_uvm"
     "nvidia_drm"
   ];
-  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
+  boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia.NVreg_EnableGpuFirmware=0" ];
 
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.gdm.enableGnomeKeyring = true;
@@ -279,7 +291,7 @@
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #
   # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
+  # even if you've upgrades your system to a new NixOS release.
   #
   # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
   # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
