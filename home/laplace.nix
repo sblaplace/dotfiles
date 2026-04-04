@@ -49,7 +49,6 @@
     ffmpeg
     pandoc
     glow
-    claude-code
     elan
     radare2
     nerd-fonts.fira-code
