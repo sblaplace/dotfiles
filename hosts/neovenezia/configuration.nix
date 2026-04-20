@@ -82,7 +82,7 @@
   ];
 
   # neovenezia-specific mouse sensitivity
-  services.libinput.mouse.transformationMatrix = "1.0 0 0 0 1.0 0 0 0 0.5";
+  services.libinput.mouse.transformationMatrix = "1.0 0 0 0 1.0 0 0 0 0.25";
 
   networking.hostName = "neovenezia";
   networking.networkmanager = {
@@ -224,6 +224,62 @@
     sopsFile = ../../secrets/k3s/secrets.yaml;
     mode = "0400";
     owner = "root";
+  };
+
+  # User secrets - written to /run/secrets/ and symlinked/copied by activation scripts
+  sops.secrets.ssh_id_ed25519 = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "ssh_id_ed25519";
+    mode = "0600";
+    owner = "laplace";
+  };
+  sops.secrets.ssh_id_ed25519_pub = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "ssh_id_ed25519_pub";
+    mode = "0644";
+    owner = "laplace";
+  };
+  sops.secrets.ssh_id_runpod_storagebox = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "ssh_id_runpod_storagebox";
+    mode = "0600";
+    owner = "laplace";
+  };
+  sops.secrets.ssh_id_runpod_storagebox_pub = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "ssh_id_runpod_storagebox_pub";
+    mode = "0644";
+    owner = "laplace";
+  };
+  sops.secrets.aws_credentials = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "aws_credentials_file";
+    mode = "0600";
+    owner = "laplace";
+  };
+  sops.secrets.aws_config = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "aws_config_file";
+    mode = "0600";
+    owner = "laplace";
+  };
+  sops.secrets.vastai_api_key = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "vastai_api_key";
+    mode = "0600";
+    owner = "laplace";
+  };
+  sops.secrets.mithril_api_key = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "mithril_api_key";
+    mode = "0600";
+    owner = "laplace";
+  };
+  sops.secrets.doctl_access_token = {
+    sopsFile = ../../secrets/user/secrets.yaml;
+    key = "doctl_access_token";
+    mode = "0600";
+    owner = "laplace";
   };
 
   services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;

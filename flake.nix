@@ -46,7 +46,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.laplace = import ./home/laplace.nix;
-              home-manager.extraSpecialArgs = { inherit hostname; };
+              home-manager.extraSpecialArgs = { inherit hostname inputs; };
             }
             {
               nixpkgs.overlays = [

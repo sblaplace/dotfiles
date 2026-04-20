@@ -12,6 +12,7 @@
     ./modules/kitty.nix
     ./modules/git.nix
     ./modules/development.nix
+    ./modules/secrets.nix
   ]
   ++
     lib.optionals
