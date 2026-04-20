@@ -1,13 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [
-    ./autostart.nix
+    ./hyprland.nix
   ];
 
   home.packages = with pkgs; [
@@ -28,7 +23,6 @@
     ytdownloader
     godot_4
     logisim-evolution
-    freecad
     kicad
     gum
     gst_all_1.gst-plugins-good
@@ -41,19 +35,8 @@
     restic
   ];
 
-  # Firefox configuration (optional)
-  programs.firefox = {
-    enable = true;
-    # You can add profiles and settings here
-  };
+  programs.firefox.enable = true;
 
-  dconf.settings = {
-    "org/gnome/mutter" = {
-      experimental-features = [ "scale-monitor-framebuffer" ];
-    };
-  };
-
-  # MPV configuration (optional)
   programs.mpv = {
     enable = true;
     config = {
@@ -65,7 +48,7 @@
   xdg.terminal-exec = {
     enable = true;
     settings = {
-      GNOME = [ "kitty.desktop" ];
+      default = [ "kitty.desktop" ];
     };
   };
 }
