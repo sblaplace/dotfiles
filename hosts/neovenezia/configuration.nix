@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 {
   config,
   lib,
@@ -12,13 +8,13 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./cachix.nix
     # ./storage.nix
     # ./backup-disko.nix
     inputs.sops-nix.nixosModules.sops
     ../../modules/common.nix
+    ../../modules/desktop.nix
     ../../modules/virtualization.nix
     ../../modules/tailscale.nix
     ../../modules/lute.nix
@@ -43,10 +39,6 @@
     modesetting.enable = true;
     open = false;
     nvidiaSettings = true;
-    # GTX 1080 Ti (Pascal/GP102) needs the legacy Pascal-capable branch.
-    # Prefer nixpkgs' packaged 580 branch over a handwritten mkDriver pin.
-    # If 580 stops building on this kernel, fall back to the last known good
-    # generation rather than reintroducing a custom driver derivation here.
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
@@ -89,8 +81,8 @@
     "nvidia.NVreg_EnableGpuFirmware=0"
   ];
 
-  services.gnome.gnome-keyring.enable = true;
-  security.pam.services.gdm.enableGnomeKeyring = true;
+  # neovenezia-specific mouse sensitivity
+  services.libinput.mouse.transformationMatrix = "1.0 0 0 0 1.0 0 0 0 0.5";
 
   networking.hostName = "neovenezia";
   networking.networkmanager = {
@@ -129,23 +121,6 @@
     };
   };
 
-  services.xserver.enable = true;
-
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-  };
-
-  services.libinput = {
-    enable = true;
-    mouse = {
-      transformationMatrix = "1.0 0 0 0 1.0 0 0 0 0.5";
-    };
-  };
-
   users.users.laplace = {
     isNormalUser = true;
     extraGroups = [
@@ -163,10 +138,6 @@
   hardware.nvidia-container-toolkit.enable = true;
 
   fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-color-emoji
-    corefonts
-    (nerd-fonts.fira-code)
     crimson
     gyre-fonts
   ];
@@ -219,17 +190,15 @@
     enable = true;
     flake = "github:sblaplace/dotfiles";
     flags = [
-      "-L" # Print build logs to journald
-      "--recreate-lock-file" # Forces Nix to update the lockfile during the remote build
-      "--commit-lock-file" # Optional: attempts to commit it if you were building locally
+      "-L"
+      "--recreate-lock-file"
+      "--commit-lock-file"
     ];
     dates = "04:00";
     randomizedDelaySec = "45min";
     allowReboot = false;
     persistent = true;
   };
-
-  services.udev.packages = [ pkgs.gnome-settings-daemon ];
 
   services.udev.extraRules = ''
     ENV{ID_FS_UUID}=="5f6f11fc-59c7-4a58-ad0b-c60e8674a469", ENV{DEVNAME}=="/dev/sdc", ENV{UDISKS_IGNORE}="1"
@@ -239,7 +208,6 @@
   environment.systemPackages = with pkgs; [
     vim
     wget
-    gnomeExtensions.appindicator
     wineWow64Packages.stable
     winetricks
     helix
@@ -260,46 +228,7 @@
 
   services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-  # This option defines the first version of NixOS you have installed on this particular machine,
-  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgrades your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.05";
 }
