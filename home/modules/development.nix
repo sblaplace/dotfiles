@@ -13,6 +13,7 @@
     rustfmt
     rust-analyzer
     clippy
+    devcontainer
   ];
 
   # Optional: configure helix

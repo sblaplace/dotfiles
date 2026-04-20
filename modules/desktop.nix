@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.hyprland = {
@@ -17,6 +22,10 @@
   };
 
   services.libinput.enable = true;
+
+  # Bluetooth support
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
   # Still needed for XWayland
   services.xserver.enable = true;
