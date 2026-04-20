@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -6,12 +11,16 @@
   ];
 
   home.packages = with pkgs; [
-    firefox
     obsidian
     signal-desktop
     blender
     qbittorrent
-    discord
+    (
+      (discord.override {
+        withOpenASAR = true;
+        withVencord = true;
+      })
+    )
     mpv
     spotify
     onlyoffice-desktopeditors
@@ -35,7 +44,32 @@
     restic
   ];
 
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    # Apply memory optimizations for Firefox/Zen
+    # These reduce RAM/VRAM usage by controlling tab behavior
+    policies = {
+      # Enable memory pressure handling
+      Performance = {
+        MemoryPressure = true;
+      };
+    };
+    profiles.default = {
+      settings = {
+        # Unload tabs when memory is low
+        "browser.tabs.unloadOnLowMemory" = true;
+        # Reduce inactive tab unload time (default is usually much higher)
+        "browser.tabs.min_inactive_duration_before_unload" = 300; # 5 minutes
+        # Disable smooth scrolling (reduces GPU load slightly)
+        "general.smoothScroll" = false;
+        # Limit content process count (reduces memory)
+        "dom.ipc.processCount" = 4;
+        # Disable hardware acceleration to save VRAM
+        # Note: This moves rendering load to CPU. Toggle in Settings -> Performance if needed.
+        "layers.acceleration.disabled" = true;
+      };
+    };
+  };
 
   programs.mpv = {
     enable = true;

@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   wayland.windowManager.hyprland = {
@@ -32,7 +37,7 @@
         "$mod, M, exit"
         "$mod, F, fullscreen"
         "$mod, Space, togglefloating"
-        "$mod, D, exec, rofi -show drun"
+        "$mod, D, exec, rofi -show drun -modi drun,run"
         "$mod, S, exec, grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
@@ -68,26 +73,52 @@
 
   programs.waybar = {
     enable = true;
-    settings = [{
-      layer = "top";
-      position = "top";
-      modules-left = [ "hyprland/workspaces" "hyprland/window" ];
-      modules-center = [ "clock" ];
-      modules-right = [ "pulseaudio" "network" "cpu" "memory" "tray" ];
-      clock = { format = "{:%a %b %d  %H:%M}"; };
-      cpu = { format = " {usage}%"; };
-      memory = { format = " {percentage}%"; };
-      network = {
-        format-wifi = " {signalStrength}%";
-        format-ethernet = " connected";
-        format-disconnected = "⚠ disconnected";
-      };
-      pulseaudio = { format = " {volume}%"; };
-    }];
+    settings = [
+      {
+        layer = "top";
+        position = "top";
+        modules-left = [
+          "hyprland/workspaces"
+          "hyprland/window"
+        ];
+        modules-center = [ "clock" ];
+        modules-right = [
+          "pulseaudio"
+          "bluetooth"
+          "network"
+          "cpu"
+          "memory"
+          "tray"
+        ];
+        clock = {
+          format = "{:%a %b %d  %H:%M}";
+        };
+        cpu = {
+          format = " {usage}%";
+        };
+        memory = {
+          format = " {percentage}%";
+        };
+        network = {
+          format-wifi = " {signalStrength}%";
+          format-ethernet = " connected";
+          format-disconnected = "⚠ disconnected";
+        };
+        pulseaudio = {
+          format = " {volume}%";
+        };
+        bluetooth = {
+          format = " {status}";
+          format-connected = " connected";
+          format-disabled = " off";
+          format-off = " off";
+        };
+      }
+    ];
   };
 
   home.packages = with pkgs; [
-    rofi-wayland
+    rofi
     mako
     hyprpaper
     wl-clipboard
