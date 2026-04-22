@@ -72,6 +72,13 @@ in
           -e 's|download.pytorch.org/whl/cu128/torchaudio-2.10.0%2Bcu128|download.pytorch.org/whl/cu126/torchaudio-2.10.0%2Bcu126|g' \
           -e 's|sha256-0muRoXPO5tuav/aLSNZCNpUP/FYo0GRI7N16xWhB4Qo=|sha256-LjdtLa7OFVAjJ5tbqmJcdMr1sBPwmOCXAoTB8xxddlE=|g' \
           $out/nix/versions.nix
+        # Patch comfy-aimdo to use the manylinux wheel that contains the compiled
+        # CUDA extension (aimdo.so). The pure-Python wheel lacks it, breaking
+        # DynamicVRAM / multi-GPU support.
+        sed -i \
+          -e 's|comfy_aimdo-0.2.12-py3-none-any.whl|comfy_aimdo-0.2.12-cp39-abi3-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl|g' \
+          -e 's|sha256-YP7JJ1LV16UeSeyyE+lUZl7YD69mS42rJEnBzB/kan4=|sha256-x+0Y0KMvRxF9/aoBxIvpjt8JociG6wXnFk6TM8ky+LM=|g' \
+          $out/nix/versions.nix
       '';
 
       # cuda_compat is aarch64-linux only in CUDA 12.9 and its manifest lacks a valid
@@ -205,6 +212,9 @@ in
     enableManager = true;
     dataDir = "/var/lib/comfyui";
     openFirewall = true;
+    # Each 1080 Ti only has 11 GB VRAM. --lowvram offloads weights to CPU/RAM
+    # between steps, allowing 12 GB models to run without falling back to pure CPU.
+    extraArgs = [ "--lowvram" ];
   };
 
   environment.systemPackages = with pkgs; [
