@@ -18,7 +18,6 @@
 
   programs.uv = {
     enable = true;
-    enableFishIntegration = true;
   };
 
   # Optional: configure helix
