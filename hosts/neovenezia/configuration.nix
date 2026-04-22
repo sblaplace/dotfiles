@@ -107,6 +107,7 @@
     dotnet-sdk_8
     stdenv.cc.cc.lib
     zlib
+    config.boot.kernelPackages.nvidia_x11
   ];
   programs.nix-ld.enable = true;
   programs.appimage = {
