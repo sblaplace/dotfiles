@@ -18,7 +18,8 @@
     ../../modules/virtualization.nix
     ../../modules/tailscale.nix
     ../../modules/lute.nix
-    ../../modules/ai.nix
+    # ../../modules/ai.nix  # removed: comfyui-nix overlay stubs cuda-compat hooks,
+    #                         causing llama-server to link against stubs libcuda.so.1
   ];
 
   # Configure Tailscale exit node (DigitalOcean)
@@ -177,6 +178,10 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # sm_61 (Pascal / GTX 1080 Ti) CUDA capability — no overlay needed,
+  # just set the capability so nixpkgs builds CUDA packages correctly.
+  nixpkgs.config.cudaCapabilities = [ "6.1" ];
+
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true;
@@ -205,6 +210,40 @@
     ENV{ID_FS_UUID}=="5f6f11fc-59c7-4a58-ad0b-c60e8674a469", ENV{DEVNAME}=="/dev/sdc", ENV{UDISKS_IGNORE}="1"
     ENV{ID_PATH}=="pci-0000:01:00.0", TAG+="mutter-device-preferred-primary"
   '';
+
+  # 1. Ollama backend with CUDA (GTX 1080 Ti)
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-cuda;
+  };
+
+  # 2. Open WebUI frontend
+  services.open-webui = {
+    enable = true;
+    port = 8082;
+    openFirewall = true;
+    host = "0.0.0.0";
+    environment = {
+      OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
+      ANONYMOUS_USAGE_STATS = "false";
+      GLOBAL_LOG_LEVEL = "DEBUG";
+    };
+  };
+
+  systemd.services.open-webui.path = with pkgs; [
+    bash
+    curl
+    coreutils
+    nodejs
+    (python3.withPackages (
+      ps: with ps; [
+        requests
+        aiohttp
+        beautifulsoup4
+        pydantic
+      ]
+    ))
+  ];
 
   environment.systemPackages = with pkgs; [
     vim
