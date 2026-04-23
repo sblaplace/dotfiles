@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -14,9 +20,4 @@
   services.k3s.extraFlags = toString [
     "--server=https://neovenezia.local:6443"
   ];
-
-  # Raspberry Pi specific
-  hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
-  boot.loader.grub.enable = false;
-  boot.loader.generic-extlinux-compatible.enable = true;
 }

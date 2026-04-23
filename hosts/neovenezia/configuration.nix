@@ -18,8 +18,10 @@
     ../../modules/virtualization.nix
     ../../modules/tailscale.nix
     ../../modules/lute.nix
-    # ../../modules/ai.nix  # removed: comfyui-nix overlay stubs cuda-compat hooks,
-    #                         causing llama-server to link against stubs libcuda.so.1
+    ../../modules/hardware/nvidia.nix
+    ../../modules/hardware/cuda.nix
+    ../../modules/hardware/mouse.nix
+
   ];
 
   # Configure Tailscale exit node (DigitalOcean)
@@ -36,13 +38,6 @@
     enable = true;
   };
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-  };
-
   services.switcherooControl.enable = true;
 
   home-manager.backupFileExtension = "backup";
@@ -51,8 +46,6 @@
     "nix-command"
     "flakes"
   ];
-
-  services.xserver.videoDrivers = [ "nvidia" ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -71,20 +64,7 @@
     allowDiscards = true;
   };
 
-  boot.initrd.kernelModules = [
-    "nvidia"
-    "nvidia_modeset"
-    "nvidia_uvm"
-    "nvidia_drm"
-  ];
-  boot.kernelParams = [
-    "nvidia-drm.modeset=1"
-    "nvidia.NVreg_EnableGpuFirmware=0"
-  ];
-
   # neovenezia-specific mouse sensitivity
-  services.libinput.mouse.transformationMatrix = "1.0 0 0 0 1.0 0 0 0 0.25";
-
   networking.hostName = "neovenezia";
   networking.networkmanager = {
     enable = true;
@@ -137,8 +117,6 @@
     enable = true;
   };
 
-  hardware.nvidia-container-toolkit.enable = true;
-
   fonts.packages = with pkgs; [
     crimson
     gyre-fonts
@@ -180,7 +158,6 @@
 
   # sm_61 (Pascal / GTX 1080 Ti) CUDA capability — no overlay needed,
   # just set the capability so nixpkgs builds CUDA packages correctly.
-  nixpkgs.config.cudaCapabilities = [ "6.1" ];
 
   programs.steam = {
     enable = true;
@@ -212,10 +189,6 @@
   '';
 
   # 1. Ollama backend with CUDA (GTX 1080 Ti)
-  services.ollama = {
-    enable = true;
-    package = pkgs.ollama-cuda;
-  };
 
   # 2. Open WebUI frontend
   services.open-webui = {

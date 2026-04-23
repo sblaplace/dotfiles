@@ -14,20 +14,13 @@
     ./modules/development.nix
     ./modules/secrets.nix
   ]
-  ++
-    lib.optionals
-      (builtins.elem hostname [
-        "neovenezia"
-        "t450"
-        "precision7730"
-      ])
-      [
-        # Only import desktop apps on machines with GUI
-        ./modules/desktop.nix
-      ]
+  ++ lib.optionals (builtins.pathExists ./machines/${hostname}.desktop.nix) [
+    # Only import desktop apps on machines with GUI
+    ./modules/desktop.nix
+  ]
   ++ lib.optionals (builtins.pathExists ./machines/${hostname}.nix) [
     # Import machine-specific config if it exists
-    (./machines + "/${hostname}.nix")
+    ./machines/${hostname}.nix
   ];
 
   home.username = "laplace";
