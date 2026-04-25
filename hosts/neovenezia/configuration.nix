@@ -63,8 +63,23 @@
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
   boot.extraModprobeConfig = ''
-    options ath10k_core skip_otp=y
+    options ath10k_core skip_otp=y fw_diag_log=0
+    options ath10k_pci irq_mode=1
   '';
+
+  # Explicitly disable mac80211 power save for qca9377 — NM's powersave=false
+  # doesn't always reach the firmware on this card
+  systemd.services.disable-wifi-powersave = {
+    description = "Disable WiFi power save on wlp5s0";
+    after = [ "sys-subsystem-net-devices-wlp5s0.device" ];
+    wants = [ "sys-subsystem-net-devices-wlp5s0.device" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.iw}/bin/iw dev wlp5s0 set power_save off";
+    };
+  };
 
   boot.initrd.luks.devices."cryptroot" = {
     device = "/dev/disk/by-uuid/cd67d0ba-0e7a-4308-9bb9-1be2f9a07e17";
