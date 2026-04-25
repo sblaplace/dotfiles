@@ -54,9 +54,12 @@
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
 
-  # Pinned to LTS kernel — legacy NVIDIA drivers (570.x) have build issues
+  # Pinned to LTS kernel — legacy NVIDIA drivers have build issues
   # with latest kernels. Keep pinned until driver situation is resolved.
-  boot.kernelPackages = pkgs.linuxPackages_6_12;
+  # Also pin nvidia_x11 so userland libs match the kernel module (legacy_580).
+  boot.kernelPackages = pkgs.linuxPackages_6_12.extend (self: super: {
+    nvidia_x11 = super.nvidiaPackages.legacy_580;
+  });
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
   boot.extraModprobeConfig = ''
@@ -84,7 +87,8 @@
 
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
-    font = "Lat2-Terminus16";
+    font = "ter-v16n";
+    packages = [ pkgs.terminus_font ];
     useXkbConfig = true;
   };
 

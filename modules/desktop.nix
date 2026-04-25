@@ -16,6 +16,10 @@
     wayland.enable = true;
   };
 
+  # Force non-uwsm Hyprland session; uwsm wrapper is broken in this nixpkgs
+  # (it tries to start a missing systemd user unit).
+  services.displayManager.defaultSession = "hyprland";
+
   services.pipewire = {
     enable = true;
     pulse.enable = true;

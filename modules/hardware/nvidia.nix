@@ -10,7 +10,7 @@
     modesetting.enable = true;
     open = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    package = config.boot.kernelPackages.nvidia_x11;
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
