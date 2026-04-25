@@ -9,6 +9,7 @@ let
   cfg = config.services.tailscale;
 
   # NetworkManager dispatcher script to handle LAN awareness
+  # Runs in background so NM is never blocked if tailscale isn't ready
   lanAwarenessScript = pkgs.writeShellScript "tailscale-lan-awareness" ''
     INTERFACE=$1
     ACTION=$2
@@ -19,28 +20,29 @@ let
       *) exit 0 ;;
     esac
 
-    SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
-    HOME_SSID="Little Pink Houses"
+    # Background the heavy work so NM activation never stalls
+    (
+      sleep 2
+      SSID=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes' | cut -d: -f2)
+      HOME_SSID="Little Pink Houses"
 
-    case "$ACTION" in
-      up|vpn-up)
-        if [ "$SSID" = "$HOME_SSID" ]; then
-          # On Home LAN: Disable exit node
-          ${pkgs.tailscale}/bin/tailscale up --exit-node= --accept-routes --accept-dns=false
-        else
-          # Not on Home LAN: Enable exit node if configured
-          if [ -n "${cfg.exitNode}" ]; then
-            ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes --accept-dns=false
+      case "$ACTION" in
+        up|vpn-up)
+          if [ "$SSID" = "$HOME_SSID" ]; then
+            ${pkgs.tailscale}/bin/tailscale up --exit-node= --accept-routes --accept-dns=false 2>/dev/null || true
+          else
+            if [ -n "${cfg.exitNode}" ]; then
+              ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes --accept-dns=false 2>/dev/null || true
+            fi
           fi
-        fi
-        ;;
-      down|vpn-down)
-        # If we lose wifi but have another connection, ensure exit node is back on if configured
-        if [ -n "${cfg.exitNode}" ]; then
-          ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes --accept-dns=false
-        fi
-        ;;
-    esac
+          ;;
+        down|vpn-down)
+          if [ -n "${cfg.exitNode}" ]; then
+            ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes --accept-dns=false 2>/dev/null || true
+          fi
+          ;;
+      esac
+    ) &
   '';
 in
 {
