@@ -13,10 +13,11 @@ let
     INTERFACE=$1
     ACTION=$2
 
-    # Exit if not wifi
-    if [ "$INTERFACE" != "wlan0" ] && [ "$INTERFACE" != "wlp1s0" ] && [ "$INTERFACE" != "wlp2s0" ]; then
-      exit 0
-    fi
+    # Exit if not a WiFi interface
+    case "$INTERFACE" in
+      wlan*|wlp*) ;;
+      *) exit 0 ;;
+    esac
 
     SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
     HOME_SSID="Little Pink Houses"
@@ -36,7 +37,7 @@ let
       down|vpn-down)
         # If we lose wifi but have another connection, ensure exit node is back on if configured
         if [ -n "${cfg.exitNode}" ]; then
-          ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes
+          ${pkgs.tailscale}/bin/tailscale up --exit-node=${cfg.exitNode} --accept-routes --accept-dns=false
         fi
         ;;
     esac

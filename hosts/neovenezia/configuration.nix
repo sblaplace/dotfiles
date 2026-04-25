@@ -58,6 +58,11 @@
   # with latest kernels. Keep pinned until driver situation is resolved.
   boot.kernelPackages = pkgs.linuxPackages_6_12;
 
+  # Work around ath10k firmware hangs common on mesh WiFi with band steering
+  boot.extraModprobeConfig = ''
+    options ath10k_core skip_otp=y
+  '';
+
   boot.initrd.luks.devices."cryptroot" = {
     device = "/dev/disk/by-uuid/cd67d0ba-0e7a-4308-9bb9-1be2f9a07e17";
     preLVM = true;
@@ -229,6 +234,7 @@
     dosbox-staging
     typst
     doctl
+    wirelesstools
   ];
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
