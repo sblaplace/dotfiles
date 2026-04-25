@@ -62,22 +62,26 @@
   });
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
+  # cryptmode=1 offloads encryption to CPU to avoid firmware crashes
   boot.extraModprobeConfig = ''
-    options ath10k_core skip_otp=y fw_diag_log=0
+    options ath10k_core skip_otp=y fw_diag_log=0 cryptmode=1
     options ath10k_pci irq_mode=1
   '';
 
   # Explicitly disable mac80211 power save for qca9377 — NM's powersave=false
-  # doesn't always reach the firmware on this card
+  # doesn't always reach the firmware on this card. Also set regdomain.
   systemd.services.disable-wifi-powersave = {
-    description = "Disable WiFi power save on wlp5s0";
+    description = "Disable WiFi power save and set regdomain on wlp5s0";
     after = [ "sys-subsystem-net-devices-wlp5s0.device" ];
     wants = [ "sys-subsystem-net-devices-wlp5s0.device" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${pkgs.iw}/bin/iw dev wlp5s0 set power_save off";
+      ExecStart = [
+        "${pkgs.iw}/bin/iw dev wlp5s0 set power_save off"
+        "${pkgs.iw}/bin/iw reg set US"
+      ];
     };
   };
 
@@ -89,17 +93,22 @@
 
   # neovenezia-specific mouse sensitivity
   networking.hostName = "neovenezia";
+  networking.wireless.iwd.enable = true;
   networking.networkmanager = {
     enable = true;
     wifi = {
-      backend = "wpa_supplicant";
+      backend = "iwd";
       powersave = false;
       scanRandMacAddress = false;
     };
+    # Ignore IPv6 for now as it's causing "Address unreachable" errors
+    # and we lack a valid default route for it.
     connectionConfig = {
-      "wifi.bgscan" = "0";
+      "ipv6.method" = "ignore";
     };
   };
+
+  hardware.enableRedistributableFirmware = true;
 
   time.timeZone = "America/Chicago";
 
