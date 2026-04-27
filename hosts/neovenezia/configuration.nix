@@ -63,8 +63,8 @@
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
   boot.extraModprobeConfig = ''
-    options ath10k_core skip_otp=y fw_diag_log=0 cryptmode=1
-    options ath10k_pci irq_mode=1 disable_aspm=1
+    options ath10k_core skip_otp=y fw_diag_log=0
+    options ath10k_pci irq_mode=1
   '';
 
   # Unlock the regulatory domain to allow overriding EEPROM restrictions
@@ -81,23 +81,23 @@
       RoamThreshold5G = -72;
     };
     Network = {
-      # Disable 802.11r (Fast Transition) if the driver/firmware is unstable with it
-      # EnableFastTransition = false; 
+      # Disable 802.11r (Fast Transition) — often unstable on ath10k/QCA9377
+      # firmware and a common cause of roaming timeouts (Reason 2).
+      EnableFastTransition = false;
     };
   };
 
   # Explicitly disable mac80211 power save for qca9377 — NM's powersave=false
   # doesn't always reach the firmware on this card. Also set regdomain.
   systemd.services.disable-wifi-powersave = {
-    description = "Disable WiFi power save and set regdomain on wlp5s0";
+    description = "Disable WiFi power save and set regdomain";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = [
-        "${pkgs.iw}/bin/iw dev wlp5s0 set power_save off"
-        "${pkgs.iw}/bin/iw reg set US"
+        "${pkgs.bash}/bin/bash -c 'IFACE=$(ls /sys/class/net | grep -E \"^(wlp|wlan)\" | head -n1); [ -n \"$IFACE\" ] && ${pkgs.iw}/bin/iw dev \"$IFACE\" set power_save off && ${pkgs.iw}/bin/iw reg set US'"
       ];
     };
   };
