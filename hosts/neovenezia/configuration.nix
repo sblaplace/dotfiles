@@ -73,7 +73,7 @@
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
   boot.extraModprobeConfig = ''
-    options ath10k_core skip_otp=y fw_diag_log=0
+    options ath10k_core skip_otp=y fw_diag_log=0 cryptmode=1
     options ath10k_pci irq_mode=1
   '';
 
@@ -83,12 +83,16 @@
   # iwd-specific tuning for mesh roaming stability
   networking.wireless.iwd.settings = {
     General = {
-      # Use per-network MAC addresses to avoid confusing mesh APs during roaming
-      AddressRandomization = "network";
-      # Default is -70. Lowering the threshold makes it less aggressive about 
-      # jumping between APs, which can help if the mesh is constantly steering.
-      RoamThreshold = -76;
-      RoamThreshold5G = -72;
+      # Disable randomization — some mesh systems get confused by changing MACs
+      AddressRandomization = "disabled";
+      # Default is -70. Lowering these makes iwd less likely to jump between
+      # APs unless the signal is truly poor, preventing constant roaming.
+      RoamThreshold = -85;
+      RoamThreshold5G = -80;
+    };
+    Scan = {
+      # Disable background scanning when connected — can trigger ath10k hangs
+      DisablePeriodicScan = true;
     };
     Network = {
       # Disable 802.11r (Fast Transition) — often unstable on ath10k/QCA9377
