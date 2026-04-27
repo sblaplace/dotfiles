@@ -51,6 +51,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 2;
 
+  # Disable IPv6 globally via kernel parameters to prevent "Address unreachable"
+  # errors when the local mesh/router provides invalid IPv6 configuration.
+  boot.kernelParams = [ "ipv6.disable=1" ];
+
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
 
@@ -117,11 +121,6 @@
       backend = "iwd";
       powersave = false;
       scanRandMacAddress = false;
-    };
-    # Ignore IPv6 for now as it's causing "Address unreachable" errors
-    # and we lack a valid default route for it.
-    connectionConfig = {
-      "ipv6.method" = "ignore";
     };
   };
 
