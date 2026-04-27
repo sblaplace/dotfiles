@@ -62,18 +62,19 @@
   });
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
-  # cryptmode=1 offloads encryption to CPU to avoid firmware crashes
   boot.extraModprobeConfig = ''
-    options ath10k_core skip_otp=y fw_diag_log=0 cryptmode=1
+    options ath10k_core skip_otp=y fw_diag_log=0
     options ath10k_pci irq_mode=1
   '';
+
+  # Unlock the regulatory domain to allow overriding EEPROM restrictions
+  networking.wireless.athUserRegulatoryDomain = true;
 
   # Explicitly disable mac80211 power save for qca9377 — NM's powersave=false
   # doesn't always reach the firmware on this card. Also set regdomain.
   systemd.services.disable-wifi-powersave = {
     description = "Disable WiFi power save and set regdomain on wlp5s0";
-    after = [ "sys-subsystem-net-devices-wlp5s0.device" ];
-    wants = [ "sys-subsystem-net-devices-wlp5s0.device" ];
+    after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
