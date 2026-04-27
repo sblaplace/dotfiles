@@ -85,6 +85,15 @@ let
 in
 {
   options.services.tailscale = {
+    autoConnect = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether to automatically manage Tailscale connections via NetworkManager
+        dispatcher and boot-time services.
+      '';
+    };
+
     exitNode = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
@@ -108,7 +117,7 @@ in
     ];
 
     # Register the dispatcher script
-    networking.networkmanager.dispatcherScripts = [
+    networking.networkmanager.dispatcherScripts = lib.mkIf cfg.autoConnect [
       {
         source = lanAwarenessScript;
         type = "basic";
@@ -116,7 +125,7 @@ in
     ];
 
     # Initial connection on boot
-    systemd.services.tailscale-exit-node = lib.mkIf (cfg.exitNode != null && cfg.exitNode != "") {
+    systemd.services.tailscale-exit-node = lib.mkIf (cfg.autoConnect && cfg.exitNode != null && cfg.exitNode != "") {
       description = "Configure Tailscale exit node";
       after = [
         "tailscale.service"

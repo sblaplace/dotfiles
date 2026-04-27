@@ -25,7 +25,8 @@
   ];
 
   # Configure Tailscale exit node (DigitalOcean)
-  services.tailscale.exitNode = "100.110.16.6";
+  # services.tailscale.exitNode = "100.110.16.6";
+  services.tailscale.autoConnect = false;
 
   # Enable Lute language learning server
   services.lute = {
@@ -51,9 +52,14 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 2;
 
-  # Disable IPv6 globally via kernel parameters to prevent "Address unreachable"
-  # errors when the local mesh/router provides invalid IPv6 configuration.
-  boot.kernelParams = [ "ipv6.disable=1" ];
+  # Disable IPv6 via sysctl instead of kernel parameters. This keeps the IPv6
+  # stack/loopback (::1) alive for Wine/Proton compatibility while still 
+  # preventing external "Address unreachable" errors on the mesh.
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.all.disable_ipv6" = 1;
+    "net.ipv6.conf.default.disable_ipv6" = 1;
+    "net.ipv6.conf.lo.disable_ipv6" = 0;
+  };
 
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
@@ -92,16 +98,16 @@
   };
 
   # Explicitly disable mac80211 power save for qca9377 — NM's powersave=false
-  # doesn't always reach the firmware on this card. Also set regdomain.
+  # doesn't always reach the firmware on this card. Also set regdomain and MTU.
   systemd.services.disable-wifi-powersave = {
-    description = "Disable WiFi power save and set regdomain";
+    description = "Disable WiFi power save, set MTU and regdomain";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = [
-        "${pkgs.bash}/bin/bash -c 'IFACE=$(ls /sys/class/net | grep -E \"^(wlp|wlan)\" | head -n1); [ -n \"$IFACE\" ] && ${pkgs.iw}/bin/iw dev \"$IFACE\" set power_save off && ${pkgs.iw}/bin/iw reg set US'"
+        "${pkgs.bash}/bin/bash -c 'IFACE=$(ls /sys/class/net | grep -E \"^(wlp|wlan)\" | head -n1); [ -n \"$IFACE\" ] && ${pkgs.iw}/bin/iw dev \"$IFACE\" set power_save off && ${pkgs.iproute2}/bin/ip link set dev \"$IFACE\" mtu 1450 && ${pkgs.iw}/bin/iw reg set US'"
       ];
     };
   };
