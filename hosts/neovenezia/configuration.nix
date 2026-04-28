@@ -73,7 +73,7 @@
 
   # Work around ath10k firmware hangs common on mesh WiFi with band steering
   boot.extraModprobeConfig = ''
-    options ath10k_core skip_otp=y fw_diag_log=0 cryptmode=1
+    options ath10k_core skip_otp=y fw_diag_log=0
     options ath10k_pci irq_mode=1
   '';
 
