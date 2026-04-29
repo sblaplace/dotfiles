@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langgraph-agent
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: langgraph-agent
+  template:
+    metadata:
+      labels:
+        app: langgraph-agent
+    spec:
+      containers:
+        - name: agent
+          image: python:3.11-slim
+          command: ["sleep", "infinity"] # Placeholder for actual agent code
+          env:
+            - name: FORGEJO_URL
+              value: "http://forgejo.forgejo.svc.cluster.local"
+            - name: PLANE_URL
+              value: "http://plane-web.plane.svc.cluster.local"
+            - name: LLM_API_BASE
+              value: "http://llama-cpp-server.llm-tools.svc.cluster.local:8080/v1"
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: langgraph-agent
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: langgraph-agent

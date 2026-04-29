@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: plane
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plane-config
+  namespace: plane
+data:
+  WEB_URL: "http://plane.local"
+  API_BASE_URL: "http://api.plane.local"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plane-db
+  namespace: plane
+spec:
+  selector:
+    matchLabels:
+      app: plane-db
+  template:
+    metadata:
+      labels:
+        app: plane-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "plane_pass" # Should move to sops later
+            - name: POSTGRES_DB
+              value: "plane"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          emptyDir: {} # Placeholder for PV
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plane-db
+  namespace: plane
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: plane-db
