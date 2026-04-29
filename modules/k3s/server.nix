@@ -7,7 +7,7 @@
     enable = true;
     role = "server";
     
-    extraFlags = toString [
+    extraFlags = [
       # DISABLE k3s default CNI (flannel)
       "--flannel-backend=none"
       "--disable-network-policy"
@@ -31,18 +31,6 @@
     ];
 
     tokenFile = config.sops.secrets.k3s-server-token.path;
-  };
-
-  # Mount BPF filesystem (required for Cilium)
-  boot.kernelModules = [ "br_netfilter" "overlay" ];
-  
-  # Enable eBPF
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = 1;
-    "net.ipv4.conf.all.forwarding" = 1;
-    "net.ipv6.conf.all.forwarding" = 1;
-    "net.bridge.bridge-nf-call-iptables" = 1;
-    "net.bridge.bridge-nf-call-ip6tables" = 1;
   };
 
   # Cilium CLI tool

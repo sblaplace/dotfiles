@@ -21,6 +21,9 @@
     ../../modules/hardware/nvidia.nix
     ../../modules/hardware/cuda.nix
     ../../modules/hardware/mouse.nix
+    ../../modules/k3s/server.nix
+    ../../modules/k3s/gpu.nix
+    ../../modules/k3s/storage.nix
 
   ];
 
@@ -358,8 +361,6 @@
     mode = "0600";
     owner = "laplace";
   };
-
-  services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;
 
   services.openssh.enable = true;
 

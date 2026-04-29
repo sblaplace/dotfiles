@@ -10,7 +10,7 @@
 
   networking.hostName = "t450";
 
-  services.k3s.extraFlags = toString [
+  services.k3s.extraFlags = [
     "--node-taint=node-role.kubernetes.io/laptop=true:NoSchedule"
     "--node-label=node-role.kubernetes.io/laptop=true"
   ];

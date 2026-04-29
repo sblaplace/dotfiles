@@ -10,8 +10,7 @@
 
   networking.hostName = "raspi02";
 
-  services.k3s.extraFlags = toString [
-    "--node-label=node.kubernetes.io/instance-type=raspberry-pi"
-    "--node-label=arch=arm64"
+  services.k3s.extraFlags = [
+    "--server=https://neovenezia.local:6443"
   ];
 }

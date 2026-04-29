@@ -10,17 +10,16 @@
   # Disable swap (k8s requirement)
   swapDevices = [ ];
 
-  # Enable cgroups v2
-  systemd.enableUnifiedCgroupHierarchy = true;
-
-  # Container runtime requirements
+  # Container runtime and Cilium requirements
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
+    "net.ipv4.conf.all.forwarding" = 1;
+    "net.ipv6.conf.all.forwarding" = 1;
     "net.bridge.bridge-nf-call-iptables" = 1;
     "net.bridge.bridge-nf-call-ip6tables" = 1;
   };
 
-  # Load required kernel modules
+  # Load required kernel modules for k3s and Cilium
   boot.kernelModules = [ "br_netfilter" "overlay" ];
 
   # Install useful k8s tools

@@ -18,7 +18,7 @@
   };
 
   # K3s GPU labels and config
-  services.k3s.extraFlags = toString [
+  services.k3s.extraFlags = [
     "--node-label=nvidia.com/gpu=true"
     "--node-label=gpu-type=nvidia"
     # For desktop with RTX

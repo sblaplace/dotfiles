@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/yourusername/dotfiles
-    targetRevision: HEAD
+    repoURL: https://github.com/sblaplace/dotfiles
+    targetRevision: main
     path: cluster/apps
   destination:
     server: https://kubernetes.default.svc

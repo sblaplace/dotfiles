@@ -155,20 +155,20 @@
 
               # Install control plane
               echo "Installing neovenezia (primary control plane)..."
-              ./install.sh neovenezia 192.168.1.100 "disk-password"
+              ./install.sh neovenezia 192.168.88.2 "disk-password"
 
               # Wait for k3s to be ready
               sleep 30
 
               # Install second control plane for HA
               echo "Installing raspi01 (secondary control plane)..."
-              ./install.sh raspi01 192.168.1.51
+              ./install.sh raspi01 192.168.88.51
 
               # Install workers
               echo "Installing workers..."
-              ./install.sh t450 192.168.1.101
-              ./install.sh precision7730 192.168.1.102
-              ./install.sh raspi02 192.168.1.52
+              ./install.sh t450 192.168.88.101
+              ./install.sh precision7730 192.168.88.102
+              ./install.sh raspi02 192.168.88.52
               # ... etc
 
               echo "Cluster bootstrapped!"

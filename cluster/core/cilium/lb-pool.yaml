@@ -4,7 +4,7 @@ metadata:
   name: main-pool
 spec:
   cidrs:
-    - cidr: "192.168.1.240/28"  # 16 IPs for LoadBalancers
+    - cidr: "192.168.88.240/28"  # 16 IPs for LoadBalancers
   serviceSelector:
     matchLabels:
       io.cilium/lb-pool: main

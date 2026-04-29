@@ -17,7 +17,7 @@
   networking.hostName = "raspi01";
 
   # Join existing cluster as control plane
-  services.k3s.extraFlags = toString [
+  services.k3s.extraFlags = [
     "--server=https://neovenezia.local:6443"
   ];
 }
