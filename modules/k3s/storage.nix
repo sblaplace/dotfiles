@@ -10,6 +10,10 @@
   };
 
   networking.firewall.allowedTCPPorts = [ 2049 ];  # NFS
+  
+  systemd.tmpfiles.rules = [
+    "d /mnt/backup/minio 0755 root root -"
+  ];
 
   # Or use S3-compatible storage (MinIO)
   virtualisation.oci-containers.containers.minio = {

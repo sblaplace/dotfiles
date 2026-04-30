@@ -8,7 +8,7 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
+    ../raspi-template/disko.nix
     ../../modules/common.nix
     ../../modules/k3s/server.nix
     ../../modules/hardware/raspberry-pi.nix

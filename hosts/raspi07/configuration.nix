@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
+    ../raspi-template/disko.nix
     ../../modules/common.nix
     ../../modules/k3s/agent.nix
     ../../modules/hardware/raspberry-pi.nix

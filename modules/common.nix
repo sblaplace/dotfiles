@@ -12,12 +12,30 @@
     curl
     git
     htop
+    nmap
     docker-compose
     docker
     bun
     kaggle
     rnote
   ];
+
+  # Enable discovery
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+    };
+  };
+
+  boot.kernel.sysctl = {
+    # Allow responding to broadcast pings for discovery
+    "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
+  };
 
   # SSH access
   services.openssh = {
