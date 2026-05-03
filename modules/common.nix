@@ -37,6 +37,8 @@
     "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
   };
 
+  boot.blacklistedKernelModules = [ "af_alg" "algif_hash" "algif_skcipher" "algif_rng" "algif_aead" ];
+
   # SSH access
   services.openssh = {
     enable = true;
