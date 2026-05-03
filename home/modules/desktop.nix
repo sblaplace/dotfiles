@@ -87,4 +87,13 @@
       default = [ "kitty.desktop" ];
     };
   };
+
+  xdg.desktopEntries.lycheeslicer = {
+    name = "LycheeSlicer";
+    exec = "${lib.getExe pkgs.lycheeslicer} %u";
+    type = "Application";
+    terminal = false;
+    mimeType = [ "x-scheme-handler/lycheeslicer" ];
+    categories = [ "Graphics" ];
+  };
 }
