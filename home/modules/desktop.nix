@@ -43,6 +43,7 @@
     shotcut
     awscli2
     restic
+    chromium
   ];
 
   programs.firefox = {
