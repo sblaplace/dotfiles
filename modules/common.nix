@@ -37,14 +37,10 @@
     "net.ipv4.icmp_echo_ignore_broadcasts" = 0;
   };
 
-  boot.blacklistedKernelModules = [ "af_alg" "algif_hash" "algif_skcipher" "algif_rng" "algif_aead" ];
+  boot.blacklistedKernelModules = [ "algif_aead" ];
 
   boot.extraModprobeConfig = ''
-    install af_alg /bin/false
     install algif_aead /bin/false
-    install algif_hash /bin/false
-    install algif_skcipher /bin/false
-    install algif_rng /bin/false
   '';
 
   # SSH access
